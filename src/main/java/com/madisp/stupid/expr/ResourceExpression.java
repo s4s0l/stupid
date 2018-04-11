@@ -23,7 +23,7 @@ public class ResourceExpression implements Expression {
 	public Object value(ExecContext ctx) {
 		try {
 			return ctx.getResource(pckg, type, name);
-		} catch (NoSuchFieldException _) {
+		} catch (NoSuchFieldException ex) {
 			return null;
 		}
 	}

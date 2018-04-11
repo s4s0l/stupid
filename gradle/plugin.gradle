@@ -1,0 +1,51 @@
+
+
+apply plugin: 'com.gradle.plugin-publish'
+
+project.ext.set('gradle.publish.key', System.getenv('GRADLE_PORTAL_KEY'))
+project.ext.set('gradle.publish.secret', System.getenv('GRADLE_PORTAL_SECRET'))
+
+pluginBundle {
+    website = "${project.websiteUrl}"
+    vcsUrl = "${project.vcsUrl}"
+    description = "${project.description}"
+    tags = project.tags
+    plugins {
+        dockerComposePlugin {
+            id = "${project.projectId}"
+            displayName = "${project.displayName}"
+        }
+    }
+}
+
+
+
+//ext.localRepoUrl = new File(rootProject.buildDir, 'localrepo')
+//System.setProperty("maven.repo.local", ext.localRepoUrl.getAbsolutePath())
+//plugins.withType(MavenPlugin) {
+//    install {
+//        repositories {
+//            mavenDeployer {
+//                repositoryName(url: localRepoUrl.toURI())
+//            }
+//        }
+//    }
+//}
+
+tasks.withType(Test) {
+    environment "GRADLE_USER_HOME", gradle.gradleUserHomeDir
+    environment "PROJECT_VERSION", project.version
+    environment "LOCAL_REPO", localRepoUrl.absolutePath
+    environment "LOCAL_BUILD_DIR", rootProject.buildDir.absolutePath + "/PluginTests"
+    dependsOn install
+    testLogging {
+        exceptionFormat 'full'
+    }
+}
+
+task("cleanupPluginTests", type:org.gradle.api.tasks.Delete) {
+    delete rootProject.buildDir.absolutePath + "/PluginTests"
+}
+clean.dependsOn cleanupPluginTests
+
+

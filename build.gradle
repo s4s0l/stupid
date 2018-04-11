@@ -1,188 +1,33 @@
-repositories {
-    mavenCentral()
+println System.getProperty("java.version")
+println System.getProperty("java.home")
+buildscript {
+    apply from: './gradle/buildscript.gradle', to: buildscript
 }
+apply from: './gradle/common.gradle'
+apply plugin: 'antlr'
 
-// gradle stuff
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '1.11'
-}
+group 'org.s4s0l.stupid'
 
-// plugins
-
-apply plugin: 'java'
-apply plugin: 'maven-publish'
-apply plugin: 'jacoco'
-apply plugin: 'findbugs'
-apply plugin: 'checkstyle'
-
-// general project info
-
-group = 'com.madisp.stupid'
-version = '0.1.1'
-if (!project.hasProperty('release')) {
-    version = version + '-SNAPSHOT'
-}
-project.sourceCompatibility = '1.6'
-tasks.withType(Compile) { options.encoding = 'UTF-8' }
-
-// java / dependencies
-
-configurations {
-    antlr4
+ext {
+    tags = ['antlr', 'scripting', 'jvm', 'lang', 'stupid']
+    vcsUrl = "https://github.com/s4s0l/stupid.git"
+    websiteUrl = "https://github.com/s4s0l/stupid"
+    issueTrackerUrl = "https://github.com/s4s0l/stupid/issues"
+    license = "MIT License"
+    organization = "sasol-oss"
+    projectId = "${group}.${project.name}"
+    githubRepository = "s4s0l/stupid"
 }
 
 dependencies {
-    antlr4 'org.antlr:antlr4:4.2'
-    compile 'org.antlr:antlr4-runtime:4.2'
+    antlr "org.antlr:antlr4:4.7.1"
+    compile 'org.antlr:antlr4-runtime:4.7.1'
     testCompile 'junit:junit:4.11'
 }
 
-// code coverage
-
-jacocoTestReport {
-    group = 'reporting'
-    reports {
-        xml.enabled false
-        csv.enabled false
-        html.destination "${buildDir}/reports/coverage"
-    }
-}
-
-// static analysis
-
-findbugs {
-    excludeFilter file('config/findbugs/exclude.xml')
-}
-
-tasks.withType(FindBugs) {
-    reports {
-        xml.enabled = false
-        html.enabled = true
-    }
-}
-
-// antlr4 custom tasks
-// TODO write a plugin for this
-
-task generateGrammarSources(type: JavaExec) {
-    ext.grammarFiles = fileTree('src/main/antlr4').include('*.g4')
-    ext.outputPath = 'gen'
-    ext.package = 'com.madisp.stupid.gen'
-    inputs.files grammarFiles
-    outputs.dir outputPath
-    classpath configurations.antlr4
-    main = 'org.antlr.v4.Tool'
-    args('-o')
-    args(ext.outputPath + '/' + ext.package.replace('.', '/'))
-    args('-package')
-    args(ext.package)
-    args('-visitor')
-    args('-no-listener')
-    args(grammarFiles.files.join(' '))
-}
-
-task grun(type: JavaExec, dependsOn: compileJava) {
-    classpath configurations.antlr4
-    classpath sourceSets.main.output
-    main = 'org.antlr.v4.runtime.misc.TestRig'
-    args('com.madisp.stupid.gen.Stupid')
-    args('prog')
-    args('-gui')
-    setStandardInput(System.in)
-    doFirst {
-        project.logger.info('Running grun with grammar com.madisp.bad.parse.Expr and rule prog with args -gui')
-        println('Input expression (CTRL+D / EOF to finish):')
-    }
-}
-
-compileJava.dependsOn generateGrammarSources
-clean.dependsOn cleanGenerateGrammarSources
-
-sourceSets.main.java.srcDirs 'gen'
-
-// jar with sources
-
-task sourceJar(type: Jar) {
-    from sourceSets.main.allJava
-}
-
-// jar with javadocs
-
-task javadocs(type: Javadoc) {
-    source = sourceSets.main.allJava
-    classpath = configurations.compile
-}
-task javadocJar(type: Jar, dependsOn: javadocs) {
-    from javadoc.destinationDir
-}
-
-// publishing, prepping for central
-
-publishing {
-    repositories {
-        maven {
-            name 'dry'
-            url "$buildDir/repo"
-        }
-        maven {
-            name 'snapshots'
-            url 'https://oss.sonatype.org/content/repositories/snapshots'
-            credentials {
-                username = System.getenv("SONATYPE_OSS_USER")
-                password = System.getenv("SONATYPE_OSS_PASS")
-            }
-        }
-    }
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-            artifact sourceJar {
-                classifier 'sources'
-            }
-            artifact javadocJar {
-                classifier 'javadoc'
-            }
-            pom.withXml {
-                // modify the antlr4 runtime dep to be compile :( this tears me up :(
-                def fixdeps = ['org.antlr:antlr4-runtime']
-                asNode().dependencies.dependency.each { dep ->
-                    if (fixdeps.find({it == "${dep.groupId.text()}:${dep.artifactId.text()}"})) {
-                        dep.remove dep.scope
-                    }
-                }
-                // add all the extra information
-                asNode().children().last() + {
-                    resolveStrategy = Closure.DELEGATE_FIRST
-                    packaging 'jar'
-                    name 'stupid'
-                    description 'A stupid scripting language for Java/JVM'
-                    url 'http://github.com/madisp/stupid'
-                    scm {
-                        url 'http://github.com/madisp/stupid'
-                        connection 'scm:git:git://github.com/madisp/stupid.git'
-                        developerConnection 'scm:git:ssh://git@github.com/madisp/stupid.git'
-                    }
-                    issueManagement {
-                        system 'GitHub'
-                        url 'http://github.com/madisp/stupid/issues'
-                    }
-                    developers {
-                        developer {
-                            id 'madisp'
-                            name 'Madis Pink'
-                            email 'madis.pink@gmail.com'
-                        }
-                    }
-                    licenses {
-                        license {
-                            name 'The MIT License'
-                            url 'http://opensource.org/licenses/MIT'
-                            distribution 'repo'
-                        }
-                    }
-                }
-            }
-        }
-    }
+generateGrammarSource {
+    maxHeapSize = "64m"
+    outputDirectory = new File("${project.buildDir}/generated-src/antlr/main/com/madisp/stupid/gen".toString())
+    arguments += ["-package","com.madisp.stupid.gen","-visitor", "-no-listener"]
 }
