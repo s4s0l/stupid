@@ -28,3 +28,7 @@ dependencies {
     testCompile "org.mockito:mockito-core:2.6.3"
 }
 
+javadoc {
+    // without the -quiet option, the build fails
+    options.addStringOption('Xdoclint:none', '-quiet')
+}

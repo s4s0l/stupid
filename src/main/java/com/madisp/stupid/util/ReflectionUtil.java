@@ -48,7 +48,6 @@ public class ReflectionUtil {
 	 * is an array, can we assume that this is a varargs call?)
 	 * @param dstTypes
 	 * @param srcTypes
-	 * @return
 	 */
 	public static boolean isCollapsible(Class[] dstTypes, Class[] srcTypes) {
 		if (dstTypes.length > srcTypes.length+1 || srcTypes.length == 0 || dstTypes.length == 0) {
@@ -74,9 +73,6 @@ public class ReflectionUtil {
 
 	/**
 	 * Collapse src array so it's class signature matches dest.
-	 * @param dst
-	 * @param src
-	 * @return
 	 */
 	public static Object[] collapse(Class[] dst, Object[] src) {
 		if (dst.length == src.length) {
@@ -101,9 +97,6 @@ public class ReflectionUtil {
 	/**
 	 * Can we assign to an list with signature dstTypes from a list with signature srcTypes?
 	 * e.g. is dstTypes[i] assignable with something from srcTypes[i] ?
-	 * @param dstTypes
-	 * @param srcTypes
-	 * @return
 	 */
 	public static boolean areAssignableFrom(Class[] dstTypes, Class[] srcTypes) {
 		if (dstTypes == null || srcTypes == null || dstTypes.length != srcTypes.length) {

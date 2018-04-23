@@ -51,7 +51,6 @@ public interface ExecContext {
 	 * @param base The object/value to yield
 	 * @param args The arguments, if any, to apply
 	 * @return The result of yielding the base object
-	 * @throws NoSuchMethodException
 	 */
 	Object apply(Object base, Object[] args) throws NoSuchMethodException;
 
