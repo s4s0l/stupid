@@ -4,6 +4,7 @@ buildscript {
     apply from: './gradle/buildscript.gradle', to: buildscript
 }
 apply from: './gradle/common.gradle'
+apply from: './gradle/jacoco.gradle'
 apply plugin: 'antlr'
 
 
@@ -19,6 +20,7 @@ ext {
     projectId = "${group}.${project.name}"
     githubRepository = "s4s0l/stupid"
 }
+apply from: './gradle/bintray.gradle'
 
 dependencies {
     antlr "org.antlr:antlr4:4.7.1"
