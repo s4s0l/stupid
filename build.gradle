@@ -15,7 +15,7 @@ ext {
     vcsUrl = "https://github.com/s4s0l/stupid.git"
     websiteUrl = "https://github.com/s4s0l/stupid"
     issueTrackerUrl = "https://github.com/s4s0l/stupid/issues"
-    license = "MIT License"
+    license = "MIT"
     organization = "sasol-oss"
     projectId = "${group}.${project.name}"
     githubRepository = "s4s0l/stupid"
