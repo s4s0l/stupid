@@ -1,14 +1,8 @@
-stupid [![Build Status](https://travis-ci.org/madisp/stupid.png?branch=master)](https://travis-ci.org/madisp/stupid)
+
+stupid [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://raw.githubusercontent.com/s4s0l/stupid/master/LICENSE)[![Run Status](https://api.shippable.com/projects/5ad3fd338b320e07000a5e69/badge?branch=master)](https://app.shippable.com/github/s4s0l/stupid)[![Coverage Badge](https://api.shippable.com/projects/5ad3fd338b320e07000a5e69/coverageBadge?branch=master)](https://app.shippable.com/github/s4s0l/stupid)[![GitHub release](https://img.shields.io/github/release/s4s0l/stupid/all.svg?style=plastic)](https://github.com/s4s0l/stupid/releases/latest)[![Bintray](https://img.shields.io/bintray/v/sasol-oss/maven/stupid.svg?style=plastic)](https://bintray.com/sasol-oss/maven/stupid)
 ======
 
-A simple scripting language with a Java runtime and interoperability. Works with Android.
-
-* [Javadoc](http://madisp.com/javadoc/stupid/)
-* [Binaries (Snapshots)](https://oss.sonatype.org/content/repositories/snapshots/com/madisp/stupid/stupid/)
-* [Binaries (Maven central)](http://search.maven.org/#artifactdetails%7Ccom.madisp.stupid%7Cstupid%7C0.1.0%7Cjar)
-  * groupId: com.madisp.stupid
-  * artifactId: stupid
-  * version: 0.1.0
+A simple scripting language with a Java runtime and interoperability.
 
 Usage
 -----

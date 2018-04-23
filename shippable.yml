@@ -25,7 +25,7 @@ build:
       (
       test $IS_PULL_REQUEST == "false" &&
       test $IS_RELEASE == "true" &&
-      test $SHIPPABLE_REPO_SLUG == "s4s0l/betelgeuse" &&
+      test $SHIPPABLE_REPO_SLUG == "s4s0l/stupid" &&
       ./gradlew --no-daemon --project-cache-dir=.cache --gradle-user-home=.cache
       -Pversion="$GIT_TAG_NAME" --info bintrayUpload
       ) || (echo "SKIPPED")
