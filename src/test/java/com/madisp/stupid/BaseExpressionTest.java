@@ -7,7 +7,7 @@ import org.junit.Before;
 
 public abstract class BaseExpressionTest {
 	protected StackContext ctx = new StackContext();
-	private ExpressionFactory builder = new ExpressionFactory();
+	protected ExpressionFactory builder = new ExpressionFactory();
 
 	protected Object eval(String expr) {
 		Value e = builder.parseExpression(expr);

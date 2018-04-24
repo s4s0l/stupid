@@ -56,6 +56,17 @@ public class VarScopeTest extends BaseExpressionTest {
 	}
 
 	@Test
+	public void testDollarsNestedCreates() throws Exception {
+		ctx.pushExecContext(new VarContext(VarContext.Type.CREATE_ON_SET_OR_GET));
+
+		assertNull(eval("$foo@r"));
+		assertEquals("foo", eval("$foo@r = 'foo'"));
+		assertEquals("foo", eval("$foo@r"));
+
+		ctx.popExecContext();
+	}
+
+	@Test
 	public void testDeeplyNestedCreates() throws Exception {
 		ctx.pushExecContext(new VarContext(VarContext.Type.CREATE_ON_SET_OR_GET));
 

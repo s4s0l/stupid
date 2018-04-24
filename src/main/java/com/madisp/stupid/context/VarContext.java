@@ -1,6 +1,7 @@
 package com.madisp.stupid.context;
 
 import com.madisp.stupid.ExecContext;
+import com.madisp.stupid.ValidationContext;
 import com.madisp.stupid.Value;
 
 import java.util.HashMap;
@@ -16,7 +17,7 @@ public class VarContext extends BaseContext {
 	/**
 	 * The type of the VarContext.
 	 */
-	public static enum Type {
+	public enum Type {
 		/**
 		 * No variables can be created, the variable set is immutable.
 		 */
@@ -76,7 +77,7 @@ public class VarContext extends BaseContext {
 			}
 		}
 
-		if (!obj.has(identifier)) {
+		if (obj.missing(identifier)) {
 			if (type != Type.CREATE_ON_SET_OR_GET) {
 				throw new NoSuchFieldException();
 			}
@@ -96,7 +97,7 @@ public class VarContext extends BaseContext {
 			}
 		}
 
-		if (!obj.has(identifier)) {
+		if (obj.missing(identifier)) {
 			if (type == Type.NO_CREATE) {
 				throw new NoSuchFieldException();
 			}
@@ -105,16 +106,16 @@ public class VarContext extends BaseContext {
 	}
 
 	private static class Var implements Value {
-		private Object value = null;
+		private Object value;
 		private final Map<String, Var> vars;
 
 		private Var(Object value) {
 			this.value = value;
-			this.vars = new HashMap<String, Var>();
+			this.vars = new HashMap<>();
 		}
 
-		private boolean has(String identifier) {
-			return vars.containsKey(identifier);
+		private boolean missing(String identifier) {
+			return !vars.containsKey(identifier);
 		}
 
 		private Object get(String identifier) {
@@ -129,6 +130,11 @@ public class VarContext extends BaseContext {
 		@Override
 		public Object value(ExecContext ctx) {
 			return value;
+		}
+
+		@Override
+		public void validate(ValidationContext ctx) {
+
 		}
 	}
 }

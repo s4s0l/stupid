@@ -42,7 +42,7 @@ public class BaseContext implements ExecContext {
 
 	@Override
 	public Object dereference(Object object) {
-		while (object != null && object instanceof Value) {
+		while (object instanceof Value) {
 			object = ((Value)object).value(this);
 		}
 		return object;

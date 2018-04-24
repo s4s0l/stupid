@@ -6,9 +6,23 @@ package com.madisp.stupid;
  * tree outside of evaluation.
  */
 public interface Expression<T> extends Value<T> {
-	/**
-	 * Get the set of sub-expressions, if any.
-	 * @return an array of sub-expressions, it may be an empty array
-	 */
-	Expression[] children();
+    /**
+     * Get the set of sub-expressions, if any.
+     *
+     * @return an array of sub-expressions, it may be an empty array
+     */
+    Expression[] children();
+
+    @Override
+    default void validate(ValidationContext ctx) throws NoSuchFieldException, NoSuchMethodException {
+        Expression[] children = children();
+        if (children != null) {
+            for (Expression child : children) {
+                if (child != null) {
+                    child.validate(ctx);
+                }
+            }
+        }
+    }
+
 }

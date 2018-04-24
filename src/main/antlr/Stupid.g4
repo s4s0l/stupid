@@ -84,7 +84,7 @@ COLON: ':';
 LPAREN: '(';
 RPAREN: ')';
 DOT: '.';
-IDENTIFIER: (ALPHA|DOLLAR) (ALPHANUMERIC)*;
+IDENTIFIER: DOLLAR? (ALPHANUMERIC)+ ('@' (ALPHANUMERIC)+)?;
 WS: [ \r\t\u000c\n]+ -> skip;
 
 fragment ESC: '\\' ('t'|'n'|'r'|'\''|'\\');
