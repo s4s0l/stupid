@@ -1,29 +1,14 @@
 package com.madisp.stupid;
 
-import com.madisp.stupid.expr.AndExpression;
-import com.madisp.stupid.expr.ApplyExpression;
-import com.madisp.stupid.expr.AssignExpression;
-import com.madisp.stupid.expr.BlockExpression;
-import com.madisp.stupid.expr.CallExpression;
-import com.madisp.stupid.expr.ComparisonExpression;
-import com.madisp.stupid.expr.ConstantExpression;
-import com.madisp.stupid.expr.DivisionExpression;
-import com.madisp.stupid.expr.EqualsExpression;
-import com.madisp.stupid.expr.MinusExpression;
-import com.madisp.stupid.expr.MultiplicationExpression;
-import com.madisp.stupid.expr.NegateExpression;
-import com.madisp.stupid.expr.NotExpression;
-import com.madisp.stupid.expr.OrExpression;
-import com.madisp.stupid.expr.PlusExpression;
-import com.madisp.stupid.expr.ResourceExpression;
-import com.madisp.stupid.expr.StatementListExpression;
-import com.madisp.stupid.expr.TernaryExpression;
-import com.madisp.stupid.expr.VarExpression;
+import com.madisp.stupid.expr.*;
 import com.madisp.stupid.gen.StupidBaseVisitor;
 import com.madisp.stupid.gen.StupidLexer;
 import com.madisp.stupid.gen.StupidParser;
 import com.madisp.stupid.util.CharSupport;
-import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.BailErrorStrategy;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CodePointCharStream;
+import org.antlr.v4.runtime.CommonTokenStream;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +41,7 @@ public class ExpressionFactory extends StupidBaseVisitor<Expression> {
     }
 
     @Override
-    public Expression visitProg( StupidParser.ProgContext ctx) {
+    public Expression visitProg(StupidParser.ProgContext ctx) {
         List<Expression> statements = new ArrayList<>();
         StupidParser.StatementsContext xs = ctx.statements();
         while (xs != null) {
@@ -66,8 +51,9 @@ public class ExpressionFactory extends StupidBaseVisitor<Expression> {
         return new StatementListExpression(statements);
     }
 
+
     @Override
-    public Expression visitExpr( StupidParser.ExprContext ctx) {
+    public Expression visitExpr(StupidParser.ExprContext ctx) {
         if (ctx.value() != null) {
             return visitValue(ctx.value());
         }
@@ -132,8 +118,34 @@ public class ExpressionFactory extends StupidBaseVisitor<Expression> {
                 base = visitExpr(ctx.left);
             }
             return new AssignExpression(base, ctx.assign().IDENTIFIER().getText(), visitExpr(ctx.assign().expr()));
+        } else if (ctx.condition() != null) {
+            Expression expression = visitExpr(ctx.condition().cond);
+            Expression expression1 = visitStatements(ctx.condition().ontrue);
+            Expression expression2;
+            if (ctx.condition().onfalse != null) {
+                expression2 = visitStatements(ctx.condition().onfalse);
+            } else {
+                expression2 = new ConstantExpression(false);
+            }
+            return new ConditionExpression(expression, expression1, expression2);
         }
         return super.visitExpr(ctx);
+    }
+
+    @Override
+    public StatementListExpression visitStatements(StupidParser.StatementsContext ctx) {
+        List<Expression> statements = new ArrayList<>();
+        //        Collections.reverse(statements);
+        if (ctx.expr() != null) {
+            statements.add(visitExpr(ctx.expr()));
+        }
+        StupidParser.StatementsContext xs = ctx.statements();
+        while (xs != null) {
+            statements.add(visitExpr(xs.expr()));
+            xs = xs.statements();
+        }
+
+        return new StatementListExpression(statements);
     }
 
     @Override
@@ -192,15 +204,8 @@ public class ExpressionFactory extends StupidBaseVisitor<Expression> {
             varsList.add(vars.IDENTIFIER().getText());
             vars = vars.varlist();
         }
-
-        List<Expression> statements = new ArrayList<>();
-        StupidParser.StatementsContext xs = ctx.statements();
-        while (xs != null) {
-            statements.add(visitExpr(xs.expr()));
-            xs = xs.statements();
-        }
-
-        return new BlockExpression(varsList.toArray(new String[0]), new StatementListExpression(statements));
+        StatementListExpression body = visitStatements(ctx.statements());
+        return new BlockExpression(varsList.toArray(new String[0]), body);
     }
 
     @Override

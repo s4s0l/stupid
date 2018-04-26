@@ -2,7 +2,7 @@ grammar Stupid;
 
 prog: statements EOF;
 statements: expr ';' statements
-          | expr;
+          | expr ';'?;
 
 expr: BANG center=expr
     | MINUS center=expr
@@ -22,6 +22,7 @@ expr: BANG center=expr
     | left=expr AND right=expr
     | left=expr OR right=expr
     | left=expr ASK center=expr COLON right=expr
+    | condition
     | assign
     | left=expr DOT assign
     | value;
@@ -32,6 +33,8 @@ value: bool
      | nil
      | resource
      | block;
+
+condition: IF LPAREN cond=expr RPAREN '{' ontrue=statements '}' (ELSE '{' onfalse=statements '}')?;
 
 assign: IDENTIFIER EQUALS expr;
 
@@ -70,6 +73,8 @@ DOUBLE: INT ('d'|'f')
       | INT '.' INT ('d'|'f')?;
 BANG: '!';
 AND: 'and';
+IF: 'if';
+ELSE: 'else';
 EQUALS: '=';
 OR: 'or';
 PLUS: '+';

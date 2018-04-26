@@ -2,40 +2,35 @@ package com.madisp.stupid;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class BlocksTest extends BaseExpressionTest {
-	public boolean run = false;
+	private boolean run = false;
 
-	public Runnable runnable = new Runnable() {
-		@Override
-		public void run() {
-			run = true;
-		}
-	};
+	private Runnable runnable = () -> run = true;
 
-	public void run(Runnable run) {
+	private void run(Runnable run) {
 		run.run();
 	}
 
 	@Test
-	public void testSimpleBlock() throws Exception {
+	public void testSimpleBlock() {
 		assertNotNull(eval("{|x| x * x }"));
 		assertEquals(Block.class, eval("{|x| x * x }").getClass());
 		assertEquals(4, eval("{|x| x * x}.(2)"));
+		assertEquals(4, eval("{|x| x * x;x;}.(4)"));
 	}
 
 	@Test
-	public void testSingleMethodApply() throws Exception {
-		assertEquals(false, run);
+	public void testSingleMethodApply() {
+		assertFalse(run);
 		run(runnable);
-		assertEquals(true, run);
+		assertTrue(run);
 		run = false;
 
-		assertEquals(false, run);
+		assertFalse(false);
 		eval("runnable.()");
-		assertEquals(true, run);
+		assertTrue(run);
 		// restore run
 		run = false;
 	}
