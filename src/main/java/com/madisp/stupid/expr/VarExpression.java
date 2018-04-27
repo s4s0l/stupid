@@ -3,6 +3,7 @@ package com.madisp.stupid.expr;
 import com.madisp.stupid.ExecContext;
 import com.madisp.stupid.Expression;
 import com.madisp.stupid.ExpressionVisitor;
+import com.madisp.stupid.StupidRuntimeException;
 
 /**
  * Get a variable, either for getting a value or assigning to it.
@@ -18,7 +19,7 @@ public class VarExpression implements Expression {
     }
 
     @Override
-    public Object value(ExecContext ctx) {
+    public Object value(ExecContext ctx) throws StupidRuntimeException {
         Object root = base == null ? null : base.value(ctx);
         if (base != null && root == null) {
             return null; // null.something always yields null

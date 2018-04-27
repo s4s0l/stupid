@@ -29,7 +29,7 @@ public class ValidationTest {
         return "2" + x;
     }
 
-    private Object eval(String expr) throws NoSuchMethodException {
+    private Object eval(String expr) throws NoSuchMethodException, StupidRuntimeException {
         Value e = builder.parseExpression(expr);
         Set<MethodSignature> requiredMethods = MethodFinder.findRequiredMethods(e);
         requiredMethods.removeAll(fmc.getSupportedSignatures());

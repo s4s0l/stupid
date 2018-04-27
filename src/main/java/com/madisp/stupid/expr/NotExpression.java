@@ -2,6 +2,7 @@ package com.madisp.stupid.expr;
 
 import com.madisp.stupid.ExecContext;
 import com.madisp.stupid.Expression;
+import com.madisp.stupid.StupidRuntimeException;
 
 /**
  * The unary boolean not operator.
@@ -16,7 +17,7 @@ public class NotExpression implements Expression<Boolean> {
 	}
 
 	@Override
-	public Boolean value(ExecContext ctx) {
+    public Boolean value(ExecContext ctx) throws StupidRuntimeException {
 		return !ctx.getConverter().toBool(ctx.dereference(expr));
 	}
 

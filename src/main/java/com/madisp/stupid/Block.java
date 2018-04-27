@@ -56,9 +56,9 @@ public class Block implements VisitorAcceptor {
      *             in the constructor)
      * @return The evaluated value of the block
      */
-    public Object yield(ExecContext ctx, Object... args) {
+    public Object yield(ExecContext ctx, Object... args) throws StupidRuntimeException {
         if (varNames.length != args.length) {
-            throw new IllegalArgumentException("Expected " + varNames.length + " arguments but got " + args.length + " in " + getBlockName());
+            throw new StupidRuntimeException("Expected " + varNames.length + " arguments but got " + args.length + " in " + getBlockName() + " code block");
         }
         Map<String, Object> argMap = new HashMap<>();
         for (int i = 0; i < varNames.length; i++) {

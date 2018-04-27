@@ -10,7 +10,7 @@ import static org.junit.Assert.assertEquals;
 
 public class ConditionTest extends BaseExpressionTest {
     @Test
-    public void testIf() {
+    public void testIf() throws StupidRuntimeException {
         ctx.pushExecContext(new VarContext(CREATE_ON_SET_OR_GET, new HashMap<>()));
         assertEquals(Boolean.class, eval("if (false) { 1 }").getClass());
         assertEquals(false, eval("if (false) { 1 }"));
@@ -23,7 +23,7 @@ public class ConditionTest extends BaseExpressionTest {
     }
 
     @Test
-    public void testIfElse() {
+    public void testIfElse() throws StupidRuntimeException {
         ctx.pushExecContext(new VarContext(CREATE_ON_SET_OR_GET, new HashMap<>()));
         assertEquals(Boolean.class, eval("if (false) { 1 } else {true}").getClass());
         assertEquals(true, eval("if (false) { 1 } else {true;}"));

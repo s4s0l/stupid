@@ -2,6 +2,7 @@ package com.madisp.stupid.expr;
 
 import com.madisp.stupid.ExecContext;
 import com.madisp.stupid.Expression;
+import com.madisp.stupid.StupidRuntimeException;
 
 /**
  * The equals expression.
@@ -23,7 +24,7 @@ public class EqualsExpression implements Expression<Boolean> {
 	}
 
 	@Override
-	public Boolean value(ExecContext ctx) {
+    public Boolean value(ExecContext ctx) throws StupidRuntimeException {
 		Object leftValue = ctx.dereference(left);
 		Object rightValue = ctx.dereference(right);
 		return leftValue == null ? rightValue == null : leftValue.equals(rightValue);

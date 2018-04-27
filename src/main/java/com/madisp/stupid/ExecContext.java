@@ -43,7 +43,7 @@ public interface ExecContext {
 	 * @return The result of calling {root}.{identifier}({args})
 	 * @throws NoSuchMethodException if no method with matching signature was found or calling is not supported
 	 */
-	Object callMethod(Object root, String identifier, Object... args) throws NoSuchMethodException;
+	Object callMethod(Object root, String identifier, Object... args) throws NoSuchMethodException, StupidRuntimeException;
 
 	/**
 	 * Yield a value with some arguments.
@@ -54,7 +54,7 @@ public interface ExecContext {
 	 * @param args The arguments, if any, to apply
 	 * @return The result of yielding the base object
 	 */
-	Object apply(Object base, Object[] args) throws NoSuchMethodException;
+	Object apply(Object base, Object[] args) throws NoSuchMethodException, StupidRuntimeException;
 
 	/**
 	 * Obtain a descriptor for a given resource.
@@ -78,7 +78,7 @@ public interface ExecContext {
 	 * @param object The object to dereference. May be null.
 	 * @return The dereferenced object. May return the same object if it already was dereferenced.
 	 */
-	Object dereference(Object object);
+	Object dereference(Object object) throws StupidRuntimeException;
 
 	/**
 	 * Obtain the type coercion rules.

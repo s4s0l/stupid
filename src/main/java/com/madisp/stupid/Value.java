@@ -12,7 +12,7 @@ public interface Value<T> {
      * @param ctx the execution context
      * @return POJO representation of this value (expression)
      */
-    T value(ExecContext ctx);
+    T value(ExecContext ctx) throws StupidRuntimeException;
 
 
 }

@@ -1,6 +1,7 @@
 package com.madisp.stupid.context;
 
 import com.madisp.stupid.Block;
+import com.madisp.stupid.StupidRuntimeException;
 import com.madisp.stupid.util.ReflectionUtil;
 
 import java.lang.reflect.Field;
@@ -49,12 +50,12 @@ public class ReflectionContext extends BaseContext {
     }
 
     @Override
-    public Object apply(Object base, Object[] args) throws NoSuchMethodException {
+    public Object apply(Object base, Object[] args) throws NoSuchMethodException, StupidRuntimeException {
         if (base instanceof Block) {
             return ((Block) base).yield(this, args);
         }
         if (base == null) {
-            throw new NoSuchMethodException();
+            throw new NoSuchMethodException("apply");
         }
         Class[] argClasses = new Class[args.length];
         for (int i = 0; i < args.length; i++) {
@@ -82,10 +83,10 @@ public class ReflectionContext extends BaseContext {
             try {
                 return m.invoke(base, ReflectionUtil.collapse(methods[0].getParameterTypes(), args));
             } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new NoSuchMethodException();
+                throw new NoSuchMethodException("apply");
             }
         }
-        throw new NoSuchMethodException();
+        throw new NoSuchMethodException("apply");
     }
 
     private Object getFieldValueImpl(Object instance, String identifier) throws NoSuchFieldException {
@@ -96,9 +97,9 @@ public class ReflectionContext extends BaseContext {
                 }
             }
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            throw new NoSuchFieldException(identifier);
         }
-        throw new NoSuchFieldException();
+        throw new NoSuchFieldException(identifier);
     }
 
     private Object callMethodImpl(Object instance, String method, Object... args) throws NoSuchMethodException {
@@ -107,10 +108,10 @@ public class ReflectionContext extends BaseContext {
             try {
                 return m.invoke(instance, ReflectionUtil.collapse(m.getParameterTypes(), args));
             } catch (IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
+                throw new NoSuchMethodException(method);
             }
         }
-        throw new NoSuchMethodException();
+        throw new NoSuchMethodException(method);
     }
 
     private Object setFieldValueImpl(Object instance, String identifier, Object value) throws NoSuchFieldException {
@@ -122,9 +123,9 @@ public class ReflectionContext extends BaseContext {
                 }
             }
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            throw new NoSuchFieldException(identifier);
         }
-        throw new NoSuchFieldException();
+        throw new NoSuchFieldException(identifier);
     }
 
 }

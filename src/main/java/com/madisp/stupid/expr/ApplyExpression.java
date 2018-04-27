@@ -2,6 +2,7 @@ package com.madisp.stupid.expr;
 
 import com.madisp.stupid.ExecContext;
 import com.madisp.stupid.Expression;
+import com.madisp.stupid.StupidRuntimeException;
 
 /**
  * An apply expression, usually evals to yielding a block.
@@ -17,7 +18,7 @@ public class ApplyExpression implements Expression {
     }
 
     @Override
-    public Object value(ExecContext ctx) {
+    public Object value(ExecContext ctx) throws StupidRuntimeException {
         Object base = ctx.dereference(value);
         Object[] argValues = new Object[args.length];
         for (int i = 0; i < argValues.length; i++) {
@@ -26,7 +27,7 @@ public class ApplyExpression implements Expression {
         try {
             return ctx.apply(base, argValues);
         } catch (NoSuchMethodException ex) {
-            throw new RuntimeException(ex);
+            throw new StupidRuntimeException("No such method: " + ex.getMessage(), ex);
         }
     }
 

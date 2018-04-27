@@ -1,9 +1,6 @@
 package com.madisp.stupid.context;
 
-import com.madisp.stupid.Converter;
-import com.madisp.stupid.ExecContext;
-import com.madisp.stupid.MethodSignature;
-import com.madisp.stupid.Value;
+import com.madisp.stupid.*;
 
 import java.util.Collections;
 import java.util.Set;
@@ -21,31 +18,31 @@ public class BaseContext implements ExecContext {
 
     @Override
     public Object getFieldValue(Object root, String identifier) throws NoSuchFieldException {
-        throw new NoSuchFieldException();
+        throw new NoSuchFieldException(identifier);
     }
 
     @Override
     public Object setFieldValue(Object root, String identifier, Object value) throws NoSuchFieldException {
-        throw new NoSuchFieldException();
+        throw new NoSuchFieldException(identifier);
     }
 
     @Override
-    public Object callMethod(Object root, String identifier, Object... args) throws NoSuchMethodException {
-        throw new NoSuchMethodException();
+    public Object callMethod(Object root, String identifier, Object... args) throws NoSuchMethodException, StupidRuntimeException {
+        throw new NoSuchMethodException(identifier);
     }
 
     @Override
-    public Object apply(Object base, Object[] args) throws NoSuchMethodException {
-        throw new NoSuchMethodException();
+    public Object apply(Object base, Object[] args) throws NoSuchMethodException, StupidRuntimeException {
+        throw new NoSuchMethodException("apply");
     }
 
     @Override
     public Object getResource(String pckg, String type, String name) throws NoSuchFieldException {
-        throw new NoSuchFieldException();
+        throw new NoSuchFieldException(name);
     }
 
     @Override
-    public Object dereference(Object object) {
+    public Object dereference(Object object) throws StupidRuntimeException {
         while (object instanceof Value) {
             object = ((Value) object).value(this);
         }

@@ -57,13 +57,13 @@ public class VarContext extends BaseContext {
             if (root instanceof Var) {
                 obj = (Var) root;
             } else {
-                throw new NoSuchFieldException();
+                throw new NoSuchFieldException(identifier);
             }
         }
 
         if (obj.missing(identifier)) {
             if (type != Type.CREATE_ON_SET_OR_GET) {
-                throw new NoSuchFieldException();
+                throw new NoSuchFieldException(identifier);
             }
             obj.put(identifier, null);
         }
@@ -77,13 +77,13 @@ public class VarContext extends BaseContext {
             if (root instanceof Var) {
                 obj = (Var) root;
             } else {
-                throw new NoSuchFieldException();
+                throw new NoSuchFieldException(identifier);
             }
         }
 
         if (obj.missing(identifier)) {
             if (type == Type.NO_CREATE) {
-                throw new NoSuchFieldException();
+                throw new NoSuchFieldException(identifier);
             }
         }
         return obj.put(identifier, new Var(value));

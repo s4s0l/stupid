@@ -2,6 +2,7 @@ package com.madisp.stupid.expr;
 
 import com.madisp.stupid.ExecContext;
 import com.madisp.stupid.Expression;
+import com.madisp.stupid.StupidRuntimeException;
 
 /**
  * The boolean or operator.
@@ -16,7 +17,7 @@ public class OrExpression implements Expression {
 	}
 
 	@Override
-	public Object value(ExecContext ctx) {
+    public Object value(ExecContext ctx) throws StupidRuntimeException {
 		Object leftVal = ctx.dereference(left);
 		Object rightVal = ctx.dereference(right);
 		if (ctx.getConverter().toBool(leftVal)) {

@@ -2,6 +2,7 @@ package com.madisp.stupid.expr;
 
 import com.madisp.stupid.ExecContext;
 import com.madisp.stupid.Expression;
+import com.madisp.stupid.StupidRuntimeException;
 
 /**
  * The unary minus (negation) operator.
@@ -16,7 +17,7 @@ public class NegateExpression implements Expression {
 	}
 
 	@Override
-	public Object value(ExecContext ctx) {
+    public Object value(ExecContext ctx) throws StupidRuntimeException {
 		Object value = ctx.dereference(expr);
 		if (value instanceof Integer) {
 			return 0-((Integer)value);

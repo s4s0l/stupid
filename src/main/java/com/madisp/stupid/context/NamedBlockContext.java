@@ -22,7 +22,7 @@ public class NamedBlockContext extends BaseContext implements VisitorAcceptor {
         return value;
     }
 
-    public Block addBlock(String name, String script) {
+    public Block addBlock(String name, String script) throws StupidRuntimeException {
         StackContext x = new StackContext();
         x.pushExecContext(new VarContext(CREATE_ON_SET_OR_GET));
         Expression expression = new ExpressionFactory().parseExpression("{" + script + "}");
@@ -30,7 +30,7 @@ public class NamedBlockContext extends BaseContext implements VisitorAcceptor {
         if (dereference instanceof Block) {
             return addBlock(name, (Block) dereference);
         } else {
-            throw new IllegalStateException("script has no block!");
+            throw new StupidRuntimeException("script has no block!");
         }
     }
 

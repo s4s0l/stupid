@@ -2,6 +2,7 @@ package com.madisp.stupid.expr;
 
 import com.madisp.stupid.ExecContext;
 import com.madisp.stupid.Expression;
+import com.madisp.stupid.StupidRuntimeException;
 import com.madisp.stupid.Value;
 
 import java.util.Collections;
@@ -21,7 +22,7 @@ public class StatementListExpression implements Expression {
 	}
 
 	@Override
-	public Object value(ExecContext ctx) {
+    public Object value(ExecContext ctx) throws StupidRuntimeException {
 		Object ret = null;
 		for (Value e : statements) {
 			ret = e.value(ctx);
@@ -31,6 +32,6 @@ public class StatementListExpression implements Expression {
 
 	@Override
 	public Expression[] children() {
-		return statements.toArray(new Expression[statements.size()]);
+		return statements.toArray(new Expression[0]);
 	}
 }

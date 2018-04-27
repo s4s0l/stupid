@@ -3,6 +3,7 @@ package com.madisp.stupid.expr;
 import com.madisp.stupid.ExecContext;
 import com.madisp.stupid.Expression;
 import com.madisp.stupid.ExpressionVisitor;
+import com.madisp.stupid.StupidRuntimeException;
 
 /**
  * Call a method.
@@ -22,7 +23,7 @@ public class CallExpression implements Expression {
 
 
     @Override
-    public Object value(ExecContext ctx) {
+    public Object value(ExecContext ctx) throws StupidRuntimeException {
         Object[] argValues = new Object[args.length];
         for (int i = 0; i < argValues.length; i++) {
             argValues[i] = ctx.dereference(args[i]);
@@ -33,8 +34,8 @@ public class CallExpression implements Expression {
         }
         try {
             return ctx.callMethod(root, identifier, argValues);
-        } catch (NoSuchMethodException nsme) {
-            throw new RuntimeException(nsme);
+        } catch (NoSuchMethodException ex) {
+            throw new StupidRuntimeException("No such method: " + ex.getMessage(), ex);
         }
     }
 

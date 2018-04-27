@@ -23,7 +23,7 @@ public class BlocksTest extends BaseExpressionTest {
     }
 
     @Test
-    public void testSimpleBlock() {
+    public void testSimpleBlock() throws StupidRuntimeException {
         assertNotNull(eval("{|x| x * x }"));
         assertEquals(Block.class, eval("{|x| x * x }").getClass());
         assertEquals(4, eval("{|x| x * x}.(2)"));
@@ -31,7 +31,7 @@ public class BlocksTest extends BaseExpressionTest {
     }
 
     @Test
-    public void testSingleMethodApply() {
+    public void testSingleMethodApply() throws StupidRuntimeException {
         assertFalse(run);
         run(runnable);
         assertTrue(run);
@@ -46,7 +46,7 @@ public class BlocksTest extends BaseExpressionTest {
 
 
     @Test
-    public void testBlockCallFromVar() {
+    public void testBlockCallFromVar() throws StupidRuntimeException {
         Map<String, Object> vars = new HashMap<>();
         ctx.pushExecContext(new VarContext(CREATE_ON_SET_OR_GET, vars));
         eval("fun = {|x| x * x}");
@@ -55,7 +55,7 @@ public class BlocksTest extends BaseExpressionTest {
     }
 
     @Test
-    public void testBlockCallFromVarAsFunction() {
+    public void testBlockCallFromVarAsFunction() throws StupidRuntimeException {
         Map<String, Object> vars = new HashMap<>();
         ctx.pushExecContext(new VarContext(CREATE_ON_SET_OR_GET, vars));
         eval("fun = {|x| x * x}");
@@ -64,7 +64,7 @@ public class BlocksTest extends BaseExpressionTest {
     }
 
     @Test
-    public void testBlockCallFromVarAsFunctionNested() {
+    public void testBlockCallFromVarAsFunctionNested() throws StupidRuntimeException {
         Map<String, Object> vars = new HashMap<>();
         ctx.pushExecContext(new VarContext(CREATE_ON_SET_OR_GET, vars));
         eval("fun.x = {|x| x * x}");
@@ -72,8 +72,8 @@ public class BlocksTest extends BaseExpressionTest {
         ctx.popExecContext();
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testBlockCallFromVarDoesNotWorkWhenVarIsNotABlock() {
+    @Test(expected = StupidRuntimeException.class)
+    public void testBlockCallFromVarDoesNotWorkWhenVarIsNotABlock() throws StupidRuntimeException {
         Map<String, Object> vars = new HashMap<>();
         ctx.pushExecContext(new VarContext(CREATE_ON_SET_OR_GET, vars));
         eval("fun.x = 1");
@@ -86,7 +86,7 @@ public class BlocksTest extends BaseExpressionTest {
 
 
     @Test
-    public void testBlockCallFromNamedBlockContext() {
+    public void testBlockCallFromNamedBlockContext() throws StupidRuntimeException {
         NamedBlockContext blocks = new NamedBlockContext();
         this.ctx.pushExecContext(blocks);
         blocks.addBlock("xxx", (Block) eval("{|x| x * x}"));
@@ -111,7 +111,7 @@ public class BlocksTest extends BaseExpressionTest {
 
 
     @Test
-    public void supportingSignatures() {
+    public void supportingSignatures() throws StupidRuntimeException {
         NamedBlockContext blocks = new NamedBlockContext();
         FixedMethodContext fmc = new FixedMethodContext(
                 FixedMethodContext.root("noarg", () -> "1"));

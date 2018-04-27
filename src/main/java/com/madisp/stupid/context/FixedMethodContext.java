@@ -1,6 +1,7 @@
 package com.madisp.stupid.context;
 
 import com.madisp.stupid.MethodSignature;
+import com.madisp.stupid.StupidRuntimeException;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -42,7 +43,7 @@ public class FixedMethodContext extends BaseContext {
     }
 
     @Override
-    public Object callMethod(Object root, String identifier, Object... args) throws NoSuchMethodException {
+    public Object callMethod(Object root, String identifier, Object... args) throws NoSuchMethodException, StupidRuntimeException {
         validateCallMethod(root == null, identifier, args.length);
         FixedMethodHandler handler = Stream.of(methodHandlers)
                 .filter(x -> x.getSignature().getName().equals(identifier))
@@ -67,16 +68,16 @@ public class FixedMethodContext extends BaseContext {
                 .collect(Collectors.toSet());
     }
 
-    private void validateCallMethod(boolean root, String identifier, int argsCount) throws NoSuchMethodException {
+    private void validateCallMethod(boolean root, String identifier, int argsCount) throws NoSuchMethodException, StupidRuntimeException {
         FixedMethodHandler handler = Stream.of(methodHandlers)
                 .filter(x -> x.getSignature().getName().equals(identifier))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchMethodException("No method named " + identifier));
         if (handler.getSignature().isRoot() != root) {
-            throw new NoSuchMethodException("method named " + identifier + " was called in wrong context, should be root? " + handler.getSignature().isRoot());
+            throw new StupidRuntimeException("method named " + identifier + " was called in wrong context, should be root? " + handler.getSignature().isRoot());
         }
         if (handler.getSignature().getArgumentCount() != argsCount) {
-            throw new NoSuchMethodException("method named " + identifier + " has wrong number of args, expected " + handler.getSignature().getArgumentCount() + ", but was " + argsCount);
+            throw new StupidRuntimeException("method named " + identifier + " has wrong number of args, expected " + handler.getSignature().getArgumentCount() + ", but was " + argsCount);
         }
     }
 

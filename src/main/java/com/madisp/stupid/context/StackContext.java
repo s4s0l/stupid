@@ -3,6 +3,7 @@ package com.madisp.stupid.context;
 import com.madisp.stupid.Block;
 import com.madisp.stupid.ExecContext;
 import com.madisp.stupid.MethodSignature;
+import com.madisp.stupid.StupidRuntimeException;
 
 import java.util.*;
 
@@ -74,7 +75,7 @@ public class StackContext extends BaseContext {
     }
 
     @Override
-    public Object callMethod(Object root, String identifier, Object... args) throws NoSuchMethodException {
+    public Object callMethod(Object root, String identifier, Object... args) throws NoSuchMethodException, StupidRuntimeException {
         Object fieldValue = getFieldValue(root, identifier);
         if (fieldValue != null) {
             fieldValue = dereference(fieldValue);
@@ -86,7 +87,7 @@ public class StackContext extends BaseContext {
         }
     }
 
-    private Object callMethodInt(Object root, String identifier, Object[] args) throws NoSuchMethodException {
+    private Object callMethodInt(Object root, String identifier, Object[] args) throws NoSuchMethodException, StupidRuntimeException {
         Iterator<ExecContext> iter = stack.descendingIterator();
         while (iter.hasNext()) {
             try {
@@ -99,7 +100,7 @@ public class StackContext extends BaseContext {
     }
 
     @Override
-    public Object apply(Object base, Object[] args) throws NoSuchMethodException {
+    public Object apply(Object base, Object[] args) throws NoSuchMethodException, StupidRuntimeException {
         if (base instanceof Block) {
             return ((Block) base).yield(this, args);
         }

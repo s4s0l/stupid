@@ -2,6 +2,7 @@ package com.madisp.stupid.expr;
 
 import com.madisp.stupid.ExecContext;
 import com.madisp.stupid.Expression;
+import com.madisp.stupid.StupidRuntimeException;
 
 /**
  * The arithmetic minus operator. If any of the arguments is a double then
@@ -19,7 +20,7 @@ public class MinusExpression implements Expression {
 	}
 
 	@Override
-	public Object value(ExecContext ctx) {
+    public Object value(ExecContext ctx) throws StupidRuntimeException {
 		Object l = ctx.dereference(left);
 		Object r = ctx.dereference(right);
 		if (l instanceof Double || r instanceof Double) {
