@@ -14,13 +14,5 @@ public interface Value<T> {
      */
     T value(ExecContext ctx);
 
-    /**
-     * Validates value in validation context.
-     * Validation is a process of checking what variables can or cannot
-     * be accessed, what methods can be called
-     * and can be performed prior to execution.
-     *
-     * @param ctx context to validate against - double dispatch pattern
-     */
-    void validate(ValidationContext ctx) throws NoSuchFieldException, NoSuchMethodException;
+
 }

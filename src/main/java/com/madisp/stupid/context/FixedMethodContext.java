@@ -1,18 +1,19 @@
 package com.madisp.stupid.context;
 
-import com.madisp.stupid.ValidationContext;
+import com.madisp.stupid.MethodSignature;
 
 import java.util.Arrays;
-import java.util.Locale;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
  * @author Marcin Wielgus
  */
-public class FixedMethodContext extends BaseContext implements ValidationContext {
+public class FixedMethodContext extends BaseContext {
 
     private final FixedMethodHandler[] methodHandlers;
 
@@ -20,11 +21,31 @@ public class FixedMethodContext extends BaseContext implements ValidationContext
         this.methodHandlers = Arrays.copyOf(methodHandlers, methodHandlers.length);
     }
 
+    public static <O, R> FixedMethodHandler object(String name, Function<O, R> handler) {
+        return new DefaultMethodHandle(name, false, 0, x -> handler.apply((O) x[0]));
+    }
+
+    public static <O, A, R> FixedMethodHandler object(String name, BiFunction<O, A, R> handler) {
+        return new DefaultMethodHandle(name, false, 1, x -> handler.apply((O) x[0], (A) x[1]));
+    }
+
+    public static <R> FixedMethodHandler root(String name, Supplier<R> handler) {
+        return new DefaultMethodHandle(name, true, 0, x -> handler.get());
+    }
+
+    public static <A, R> FixedMethodHandler root(String name, Function<A, R> handler) {
+        return new DefaultMethodHandle(name, true, 1, x -> handler.apply((A) x[0]));
+    }
+
+    public static <A, B, R> FixedMethodHandler root(String name, BiFunction<A, B, R> handler) {
+        return new DefaultMethodHandle(name, true, 2, x -> handler.apply((A) x[0], (B) x[1]));
+    }
+
     @Override
     public Object callMethod(Object root, String identifier, Object... args) throws NoSuchMethodException {
         validateCallMethod(root == null, identifier, args.length);
         FixedMethodHandler handler = Stream.of(methodHandlers)
-                .filter(x -> x.getName().equals(identifier))
+                .filter(x -> x.getSignature().getName().equals(identifier))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchMethodException("No method named " + identifier));
 
@@ -40,83 +61,53 @@ public class FixedMethodContext extends BaseContext implements ValidationContext
         return handler.handle(finalArgs);
     }
 
-    @Override
-    public boolean validateCallMethod(boolean root, String identifier, int argsCount) throws NoSuchMethodException {
+    public Set<MethodSignature> getSupportedSignatures() {
+        return Stream.of(methodHandlers)
+                .map(FixedMethodHandler::getSignature)
+                .collect(Collectors.toSet());
+    }
+
+    private void validateCallMethod(boolean root, String identifier, int argsCount) throws NoSuchMethodException {
         FixedMethodHandler handler = Stream.of(methodHandlers)
-                .filter(x -> x.getName().equals(identifier))
+                .filter(x -> x.getSignature().getName().equals(identifier))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchMethodException("No method named " + identifier));
-        if (handler.isRoot() != root) {
-            throw new NoSuchMethodException("method named " + identifier + " was called in wrong context, should be root? " + handler.isRoot());
+        if (handler.getSignature().isRoot() != root) {
+            throw new NoSuchMethodException("method named " + identifier + " was called in wrong context, should be root? " + handler.getSignature().isRoot());
         }
-        if (handler.getArgumentCount() != (argsCount + (root ? 0 : 1))) {
-            throw new NoSuchMethodException("method named " + identifier + " has wrong number of args, expected " + handler.getArgumentCount() + ", but was " + argsCount);
+        if (handler.getSignature().getArgumentCount() != argsCount) {
+            throw new NoSuchMethodException("method named " + identifier + " has wrong number of args, expected " + handler.getSignature().getArgumentCount() + ", but was " + argsCount);
         }
-        return true;
     }
 
     public interface FixedMethodHandler {
-        String getName();
-
-        int getArgumentCount();
-
-        boolean isRoot();
+        MethodSignature getSignature();
 
         Object handle(Object[] args);
     }
 
     public static class DefaultMethodHandle implements FixedMethodHandler {
-        private final String name;
-        private final boolean root;
-        private final int argCount;
+        private final MethodSignature signature;
         private final Function<Object[], Object> handler;
 
-        public DefaultMethodHandle(String name, boolean root, int argCount, Function<Object[], Object> handler) {
-            this.name = name;
-            this.root = root;
-            this.argCount = argCount;
+        public DefaultMethodHandle(MethodSignature signature, Function<Object[], Object> handler) {
+            this.signature = signature;
             this.handler = handler;
         }
 
-        @Override
-        public String getName() {
-            return name;
+        public DefaultMethodHandle(String name, boolean root, int argCount, Function<Object[], Object> handler) {
+            this(new MethodSignature(name, argCount, root), handler);
         }
 
         @Override
-        public int getArgumentCount() {
-            return argCount;
-        }
-
-        @Override
-        public boolean isRoot() {
-            return root;
+        public MethodSignature getSignature() {
+            return signature;
         }
 
         @Override
         public Object handle(Object[] args) {
             return handler.apply(args);
         }
-    }
-
-    public static <R> FixedMethodHandler root(String name, Supplier<R> handler) {
-        return new DefaultMethodHandle(name, true, 0, x -> handler.get());
-    }
-
-    public static <A, R> FixedMethodHandler root(String name, Function<A, R> handler) {
-        return new DefaultMethodHandle(name, true, 1, x -> handler.apply((A) x[0]));
-    }
-
-    public static <A, B, R> FixedMethodHandler root(String name, BiFunction<A, B, R> handler) {
-        return new DefaultMethodHandle(name, true, 2, x -> handler.apply((A) x[0], (B) x[1]));
-    }
-
-    public static <O, R> FixedMethodHandler object(String name, Function<O, R> handler) {
-        return new DefaultMethodHandle(name, false, 1, x -> handler.apply((O) x[0]));
-    }
-
-    public static <O, A, R> FixedMethodHandler object(String name, BiFunction<O, A, R> handler) {
-        return new DefaultMethodHandle(name, false, 2, x -> handler.apply((O) x[0], (A) x[1]));
     }
 
 }

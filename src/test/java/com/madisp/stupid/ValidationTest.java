@@ -1,40 +1,51 @@
 package com.madisp.stupid;
 
-import com.madisp.stupid.context.*;
+import com.madisp.stupid.context.FixedMethodContext;
+import com.madisp.stupid.context.StackContext;
+import com.madisp.stupid.context.VarContext;
+import com.madisp.stupid.validation.MethodFinder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class ValidationTest {
     private StackContext ctx = new StackContext();
     private ExpressionFactory builder = new ExpressionFactory();
     private FixedMethodContext fmc = new FixedMethodContext(
             FixedMethodContext.root("noarg", () -> "1"),
-            FixedMethodContext.root("onearg", a -> "2" + a),
+            FixedMethodContext.root("onearg", ValidationTest::oneArg),
             FixedMethodContext.root("twoarg", (a, b) -> "3" + a + b),
             FixedMethodContext.object("toUpperCase", a -> a.toString().toUpperCase()),
             FixedMethodContext.object("append", (o, a) -> o.toString() + a.toString())
     );
-    private ValidationContext vc = new ComposedValidationContext(fmc);
 
-    private Object eval(String expr) throws NoSuchFieldException, NoSuchMethodException {
+    private static String oneArg(Object x) {
+        return "2" + x;
+    }
+
+    private Object eval(String expr) throws NoSuchMethodException {
         Value e = builder.parseExpression(expr);
-        e.validate(fmc);
+        Set<MethodSignature> requiredMethods = MethodFinder.findRequiredMethods(e);
+        requiredMethods.removeAll(fmc.getSupportedSignatures());
+        if (!requiredMethods.isEmpty()) {
+            throw new NoSuchMethodException();
+        }
         return ctx.dereference(e);
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         ctx.pushExecContext(fmc);
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         ctx.popExecContext();
     }
 
@@ -42,12 +53,13 @@ public class ValidationTest {
     public void fixedRootCalls() throws Exception {
         assertEquals("1", eval("noarg()"));
         assertEquals("2a", eval("onearg('a')"));
+        assertEquals("21", eval("onearg(1)"));
         assertEquals("3ab", eval("twoarg('a', 'b')"));
     }
 
     @Test
     public void fixedNonRootCalls() throws Exception {
-        Map<String, Object> vars = new HashMap<String, Object>();
+        Map<String, Object> vars = new HashMap<>();
         vars.put("foo", "value");
 
         ctx.pushExecContext(new VarContext(vars));

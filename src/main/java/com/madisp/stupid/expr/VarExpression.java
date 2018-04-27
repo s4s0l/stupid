@@ -2,7 +2,7 @@ package com.madisp.stupid.expr;
 
 import com.madisp.stupid.ExecContext;
 import com.madisp.stupid.Expression;
-import com.madisp.stupid.ValidationContext;
+import com.madisp.stupid.ExpressionVisitor;
 
 /**
  * Get a variable, either for getting a value or assigning to it.
@@ -36,8 +36,7 @@ public class VarExpression implements Expression {
     }
 
     @Override
-    public void validate(ValidationContext ctx) throws NoSuchFieldException ,NoSuchMethodException{
-        Expression.super.validate(ctx);
-        ctx.validateGetFieldValue(base == null, identifier);
+    public Object acceptVisitor(ExpressionVisitor visitor, Object value) {
+        return visitor.onVarExpression(value, this);
     }
 }

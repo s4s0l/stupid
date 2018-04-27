@@ -14,40 +14,64 @@ import java.util.Map;
  * evaluated later. A block is not a closure however, e.g., it doesn't
  * have a local scope.
  */
-public class Block {
-	private final StatementListExpression body;
-	private final String[] varNames;
+public class Block implements VisitorAcceptor {
+    private final StatementListExpression body;
+    private final String[] varNames;
+    private final String blockName;
 
-	/**
-	 * Create a new block with named arguments
-	 * @param varNames list of argument names
-	 * @param body expression that is to be evaluated
-	 */
-	public Block(String[] varNames, StatementListExpression body) {
-		this.varNames = Arrays.copyOf(varNames, varNames.length);
-		this.body = body;
-	}
+    public Block(StatementListExpression body, String[] varNames, String blockName) {
+        this.body = body;
+        this.varNames = Arrays.copyOf(varNames, varNames.length);
+        this.blockName = blockName;
+    }
 
-	/**
-	 * Evaluate the body of a block with given arguments. The length
-	 * of arguments must match the length of given names in the constructor.
-	 * @param ctx The context wherein to evaluate the block
-	 * @param args argument values (must match the same length and order as given
-	 *             in the constructor)
-	 * @return The evaluated value of the block
-	 */
-	public Object yield(ExecContext ctx, Object... args) {
-		if (varNames.length != args.length) {
-			throw new IllegalArgumentException();
-		}
-		Map<String, Object> argMap = new HashMap<String, Object>();
-		for (int i = 0; i < varNames.length; i++) {
-			argMap.put(varNames[i], args[i]);
-		}
-		// wrap our block arguments over the underlying context
-		StackContext withArgs = new StackContext();
-		withArgs.pushExecContext(ctx); // the underlying context
-		withArgs.pushExecContext(new VarContext(Collections.unmodifiableMap(argMap))); // args
-		return body.value(withArgs);
-	};
+    /**
+     * Create a new block with named arguments
+     *
+     * @param varNames list of argument names
+     * @param body     expression that is to be evaluated
+     */
+    public Block(String[] varNames, StatementListExpression body) {
+        this(body, varNames, "<<anonymous block>>");
+    }
+
+    public Block nameBlock(String blockName) {
+        return new Block(this.body, this.varNames, blockName);
+    }
+
+    public MethodSignature getMethodSignature() {
+        return new MethodSignature(blockName, varNames.length, true);
+    }
+
+    public <V> V acceptVisitor(ExpressionVisitor<V> visitor, V value) {
+        return ((Expression<?>) body).acceptVisitor(visitor, value);
+    }
+
+    /**
+     * Evaluate the body of a block with given arguments. The length
+     * of arguments must match the length of given names in the constructor.
+     *
+     * @param ctx  The context wherein to evaluate the block
+     * @param args argument values (must match the same length and order as given
+     *             in the constructor)
+     * @return The evaluated value of the block
+     */
+    public Object yield(ExecContext ctx, Object... args) {
+        if (varNames.length != args.length) {
+            throw new IllegalArgumentException("Expected " + varNames.length + " arguments but got " + args.length + " in " + getBlockName());
+        }
+        Map<String, Object> argMap = new HashMap<>();
+        for (int i = 0; i < varNames.length; i++) {
+            argMap.put(varNames[i], args[i]);
+        }
+        // wrap our block arguments over the underlying context
+        StackContext withArgs = new StackContext();
+        withArgs.pushExecContext(ctx); // the underlying context
+        withArgs.pushExecContext(new VarContext(Collections.unmodifiableMap(argMap))); // args
+        return body.value(withArgs);
+    }
+
+    public String getBlockName() {
+        return "<<anonymous block>>";
+    }
 }

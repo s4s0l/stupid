@@ -1,5 +1,7 @@
 package com.madisp.stupid;
 
+import java.util.Set;
+
 /**
  * A ExecContext facilitates access to the external environment.
  * Implementations may only provide a subset of the functionality (if stubbed, then a
@@ -83,4 +85,9 @@ public interface ExecContext {
 	 * @return the Converter defining the type coercion rules for the environment
 	 */
 	Converter getConverter();
+
+
+    Set<MethodSignature> getSupportedSignatures();
+
+
 }

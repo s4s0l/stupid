@@ -2,7 +2,11 @@ package com.madisp.stupid.context;
 
 import com.madisp.stupid.Converter;
 import com.madisp.stupid.ExecContext;
+import com.madisp.stupid.MethodSignature;
 import com.madisp.stupid.Value;
+
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * Base class for all of the {@link ExecContext} implementations in stupid.
@@ -13,47 +17,52 @@ import com.madisp.stupid.Value;
  * be overridden by calling setConverter().
  */
 public class BaseContext implements ExecContext {
-	private Converter converter = new DefaultConverter();
+    private Converter converter = new DefaultConverter();
 
-	@Override
-	public Object getFieldValue(Object root, String identifier) throws NoSuchFieldException {
-		throw new NoSuchFieldException();
-	}
+    @Override
+    public Object getFieldValue(Object root, String identifier) throws NoSuchFieldException {
+        throw new NoSuchFieldException();
+    }
 
-	@Override
-	public Object setFieldValue(Object root, String identifier, Object value) throws NoSuchFieldException {
-		throw new NoSuchFieldException();
-	}
+    @Override
+    public Object setFieldValue(Object root, String identifier, Object value) throws NoSuchFieldException {
+        throw new NoSuchFieldException();
+    }
 
-	@Override
-	public Object callMethod(Object root, String identifier, Object... args) throws NoSuchMethodException {
-		throw new NoSuchMethodException();
-	}
+    @Override
+    public Object callMethod(Object root, String identifier, Object... args) throws NoSuchMethodException {
+        throw new NoSuchMethodException();
+    }
 
-	@Override
-	public Object apply(Object base, Object[] args) throws NoSuchMethodException {
-		throw new NoSuchMethodException();
-	}
+    @Override
+    public Object apply(Object base, Object[] args) throws NoSuchMethodException {
+        throw new NoSuchMethodException();
+    }
 
-	@Override
-	public Object getResource(String pckg, String type, String name) throws NoSuchFieldException {
-		throw new NoSuchFieldException();
-	}
+    @Override
+    public Object getResource(String pckg, String type, String name) throws NoSuchFieldException {
+        throw new NoSuchFieldException();
+    }
 
-	@Override
-	public Object dereference(Object object) {
-		while (object instanceof Value) {
-			object = ((Value)object).value(this);
-		}
-		return object;
-	}
+    @Override
+    public Object dereference(Object object) {
+        while (object instanceof Value) {
+            object = ((Value) object).value(this);
+        }
+        return object;
+    }
 
-	@Override
-	public Converter getConverter() {
-		return converter;
-	}
+    @Override
+    public Set<MethodSignature> getSupportedSignatures() {
+        return Collections.emptySet();
+    }
 
-	public void setConverter(Converter converter) {
-		this.converter = converter;
-	}
+    @Override
+    public Converter getConverter() {
+        return converter;
+    }
+
+    public void setConverter(Converter converter) {
+        this.converter = converter;
+    }
 }

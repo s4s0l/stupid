@@ -5,7 +5,7 @@ package com.madisp.stupid;
  * set of sub-expressions. It is useful for analyzing the expression
  * tree outside of evaluation.
  */
-public interface Expression<T> extends Value<T> {
+public interface Expression<T> extends Value<T>, VisitorAcceptor {
     /**
      * Get the set of sub-expressions, if any.
      *
@@ -13,16 +13,8 @@ public interface Expression<T> extends Value<T> {
      */
     Expression[] children();
 
-    @Override
-    default void validate(ValidationContext ctx) throws NoSuchFieldException, NoSuchMethodException {
-        Expression[] children = children();
-        if (children != null) {
-            for (Expression child : children) {
-                if (child != null) {
-                    child.validate(ctx);
-                }
-            }
-        }
+    default <V> V acceptVisitor(ExpressionVisitor<V> visitor, V value) {
+        return visitor.onExpression(value, this);
     }
 
 }

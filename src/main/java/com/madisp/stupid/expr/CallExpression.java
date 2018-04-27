@@ -2,7 +2,7 @@ package com.madisp.stupid.expr;
 
 import com.madisp.stupid.ExecContext;
 import com.madisp.stupid.Expression;
-import com.madisp.stupid.ValidationContext;
+import com.madisp.stupid.ExpressionVisitor;
 
 /**
  * Call a method.
@@ -34,8 +34,20 @@ public class CallExpression implements Expression {
         try {
             return ctx.callMethod(root, identifier, argValues);
         } catch (NoSuchMethodException nsme) {
-            return null;
+            throw new RuntimeException(nsme);
         }
+    }
+
+    public Expression getBase() {
+        return base;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public Expression[] getArgs() {
+        return args;
     }
 
     @Override
@@ -48,8 +60,7 @@ public class CallExpression implements Expression {
 
 
     @Override
-    public void validate(ValidationContext ctx) throws NoSuchFieldException, NoSuchMethodException {
-        ctx.validateCallMethod(base == null, identifier, args.length);
-        Expression.super.validate(ctx);
+    public Object acceptVisitor(ExpressionVisitor visitor, Object value) {
+        return visitor.onCall(value, this);
     }
 }
