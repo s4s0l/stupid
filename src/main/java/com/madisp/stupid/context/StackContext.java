@@ -5,7 +5,10 @@ import com.madisp.stupid.ExecContext;
 import com.madisp.stupid.MethodSignature;
 import com.madisp.stupid.StupidRuntimeException;
 
-import java.util.*;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
 
 /**
  * StackContext is a LIFO-stack container of {@link ExecContext} instances.
@@ -63,10 +66,9 @@ public class StackContext extends BaseContext {
 
     @Override
     public Object setFieldValue(Object root, String identifier, Object value) {
-        Iterator<ExecContext> iter = stack.descendingIterator();
-        while (iter.hasNext()) {
+        for (ExecContext aStack : stack) {
             try {
-                return iter.next().setFieldValue(root, identifier, value);
+                return aStack.setFieldValue(root, identifier, value);
             } catch (NoSuchFieldException e) {
                 // ignore, jump to next scope
             }
@@ -88,10 +90,9 @@ public class StackContext extends BaseContext {
     }
 
     private Object callMethodInt(Object root, String identifier, Object[] args) throws NoSuchMethodException, StupidRuntimeException {
-        Iterator<ExecContext> iter = stack.descendingIterator();
-        while (iter.hasNext()) {
+        for (ExecContext aStack : stack) {
             try {
-                return iter.next().callMethod(dereference(root), identifier, args);
+                return aStack.callMethod(dereference(root), identifier, args);
             } catch (NoSuchMethodException e) {
                 // ignore, jump to next scope
             }
@@ -104,10 +105,9 @@ public class StackContext extends BaseContext {
         if (base instanceof Block) {
             return ((Block) base).yield(this, args);
         }
-        Iterator<ExecContext> iter = stack.descendingIterator();
-        while (iter.hasNext()) {
+        for (ExecContext aStack : stack) {
             try {
-                return iter.next().apply(base, args);
+                return aStack.apply(base, args);
             } catch (NoSuchMethodException e) {
                 // ignore, jump to next scope
             }
