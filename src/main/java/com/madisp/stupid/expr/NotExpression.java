@@ -9,7 +9,7 @@ import com.madisp.stupid.StupidRuntimeException;
  *
  * Usage in stupid: {@code !expr}
  */
-public class NotExpression implements Expression<Boolean> {
+public class NotExpression implements Expression<Object> {
 	private final Expression expr;
 
 	public NotExpression(Expression expr) {
@@ -17,8 +17,8 @@ public class NotExpression implements Expression<Boolean> {
 	}
 
 	@Override
-    public Boolean value(ExecContext ctx) throws StupidRuntimeException {
-		return !ctx.getConverter().toBool(ctx.dereference(expr));
+	public Object value(ExecContext ctx) throws StupidRuntimeException {
+		return ctx.getOperators().not(ctx.dereference(expr));
 	}
 
 	@Override

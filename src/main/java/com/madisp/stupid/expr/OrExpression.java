@@ -9,26 +9,22 @@ import com.madisp.stupid.StupidRuntimeException;
  * Usage in stupid: {@code expr or expr}
  */
 public class OrExpression implements Expression {
-	private final Expression left, right;
+    private final Expression left, right;
 
-	public OrExpression(Expression left, Expression right) {
-		this.left = left;
-		this.right = right;
-	}
+    public OrExpression(Expression left, Expression right) {
+        this.left = left;
+        this.right = right;
+    }
 
-	@Override
+    @Override
     public Object value(ExecContext ctx) throws StupidRuntimeException {
-		Object leftVal = ctx.dereference(left);
-		Object rightVal = ctx.dereference(right);
-		if (ctx.getConverter().toBool(leftVal)) {
-			return leftVal;
-		} else {
-			return rightVal;
-		}
-	}
+        Object leftVal = ctx.dereference(left);
+        Object rightVal = ctx.dereference(right);
+        return ctx.getOperators().or(leftVal, rightVal);
+    }
 
-	@Override
-	public Expression[] children() {
-		return new Expression[] { left, right };
-	}
+    @Override
+    public Expression[] children() {
+        return new Expression[]{left, right};
+    }
 }

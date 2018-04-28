@@ -16,6 +16,8 @@ import java.util.Set;
 public class BaseContext implements ExecContext {
     private Converter converter = new DefaultConverter();
 
+    private Operators operators = new DefaultOperators(() -> converter);
+
     @Override
     public Object getFieldValue(Object root, String identifier) throws NoSuchFieldException {
         throw new NoSuchFieldException(identifier);
@@ -61,5 +63,14 @@ public class BaseContext implements ExecContext {
 
     public void setConverter(Converter converter) {
         this.converter = converter;
+    }
+
+    @Override
+    public Operators getOperators() {
+        return operators;
+    }
+
+    public void setOperators(Operators operators) {
+        this.operators = operators;
     }
 }

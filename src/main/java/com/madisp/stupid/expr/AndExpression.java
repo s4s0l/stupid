@@ -8,21 +8,21 @@ import com.madisp.stupid.StupidRuntimeException;
  * The boolean and operator.
  * Usage in stupid: {@code expr and expr}
  */
-public class AndExpression implements Expression<Boolean> {
-	private final Expression left, right;
+public class AndExpression implements Expression<Object> {
+    private final Expression left, right;
 
-	public AndExpression(Expression left, Expression right) {
-		this.left = left;
-		this.right = right;
-	}
+    public AndExpression(Expression left, Expression right) {
+        this.left = left;
+        this.right = right;
+    }
 
-	@Override
-	public Boolean value(ExecContext ctx) throws StupidRuntimeException {
-		return ctx.getConverter().toBool(left.value(ctx)) && ctx.getConverter().toBool(right.value(ctx));
-	}
+    @Override
+    public Object value(ExecContext ctx) throws StupidRuntimeException {
+        return ctx.getOperators().and(left.value(ctx), right.value(ctx));
+    }
 
-	@Override
-	public Expression[] children() {
-		return new Expression[] { left, right };
-	}
+    @Override
+    public Expression[] children() {
+        return new Expression[]{left, right};
+    }
 }
