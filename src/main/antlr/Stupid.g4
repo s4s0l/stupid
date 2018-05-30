@@ -84,12 +84,13 @@ STAR: '*';
 LANGLE: '<';
 RANGLE: '>';
 DOLLAR: '$';
+HASH: '#';
 ASK: '?';
 COLON: ':';
 LPAREN: '(';
 RPAREN: ')';
 DOT: '.';
-IDENTIFIER: DOLLAR? (ALPHANUMERIC)+ ('@' (ALPHANUMERIC)+)?;
+IDENTIFIER: (DOLLAR|HASH)? (ALPHANUMERIC)+ ('@' (ALPHANUMERIC)+)?;
 WS: [ \r\t\u000c\n]+ -> skip;
 
 fragment ESC: '\\' ('t'|'n'|'r'|'\''|'\\');
