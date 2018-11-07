@@ -66,6 +66,7 @@ public class Block implements VisitorAcceptor {
         }
         // wrap our block arguments over the underlying context
         StackContext withArgs = new StackContext();
+        withArgs.setDereferencer(ctx.getDereferencer());
         withArgs.pushExecContext(ctx); // the underlying context
         withArgs.pushExecContext(new VarContext(Collections.unmodifiableMap(argMap))); // args
         return body.value(withArgs);

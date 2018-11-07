@@ -15,7 +15,7 @@ public abstract class BaseExpressionTest {
 	}
 
 	@Before
-	public void setUp() {
+	public void setUp() throws StupidRuntimeException {
 		ctx.pushExecContext(new ReflectionContext(this));
 	}
 

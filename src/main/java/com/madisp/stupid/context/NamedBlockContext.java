@@ -23,7 +23,12 @@ public class NamedBlockContext extends BaseContext implements VisitorAcceptor {
     }
 
     public Block addBlock(String name, String script) throws StupidRuntimeException {
+        return addBlock(name, script, 100);
+    }
+
+    public Block addBlock(String name, String script, long maxBlockPrepareTimeMs) throws StupidRuntimeException {
         StackContext x = new StackContext();
+        x.setDereferencer(new TimeTrackingDereferencer(1000 * 1000 * maxBlockPrepareTimeMs, 100));
         x.pushExecContext(new VarContext(CREATE_ON_SET_OR_GET));
         Expression expression = new ExpressionFactory().parseExpression("{" + script + "}");
         Object dereference = x.dereference(expression);

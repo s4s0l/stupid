@@ -1,5 +1,7 @@
 package com.madisp.stupid;
 
+import com.madisp.stupid.context.Dereferencer;
+
 import java.util.Set;
 
 /**
@@ -97,4 +99,6 @@ public interface ExecContext {
     Set<MethodSignature> getSupportedSignatures();
 
     Operators getOperators();
+
+    Dereferencer getDereferencer();
 }

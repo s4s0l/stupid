@@ -18,6 +18,8 @@ public class BaseContext implements ExecContext {
 
     private Operators operators = new DefaultOperators(() -> converter);
 
+    private Dereferencer dereferencer = new Dereferencer();
+
     @Override
     public Object getFieldValue(Object root, String identifier) throws NoSuchFieldException {
         throw new NoSuchFieldException(identifier);
@@ -43,10 +45,21 @@ public class BaseContext implements ExecContext {
         throw new NoSuchFieldException(name);
     }
 
+    /**
+     * * TODO: this bad to be here because it is provided by every context bot
+     * *      when stack context is used, stack context is the only one allowed to use it
+     * *      this is because default implementation uses this reference inside, what in
+     * *      case of contexts inside stack context makes no sense. Currently it does not
+     * *      cause any side effects, but i belivie it is by accident
+     *
+     * @param object The object to dereference. May be null.
+     * @return
+     * @throws StupidRuntimeException
+     */
     @Override
     public Object dereference(Object object) throws StupidRuntimeException {
         while (object instanceof Value) {
-            object = ((Value) object).value(this);
+            object = dereferencer.dereference((Value) object, this);
         }
         return object;
     }
@@ -72,5 +85,14 @@ public class BaseContext implements ExecContext {
 
     public void setOperators(Operators operators) {
         this.operators = operators;
+    }
+
+    @Override
+    public Dereferencer getDereferencer() {
+        return dereferencer;
+    }
+
+    public void setDereferencer(Dereferencer dereferencer) {
+        this.dereferencer = dereferencer;
     }
 }
