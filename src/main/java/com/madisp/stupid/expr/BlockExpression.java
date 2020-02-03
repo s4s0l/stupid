@@ -11,21 +11,21 @@ import java.util.Arrays;
  * Usage in stupid: {@code sqr = {|x| x * x	}}
  */
 public class BlockExpression implements Expression {
-	private final StatementListExpression body;
-	private final String[] varNames;
+    private final StatementListExpression body;
+    private final String[] varNames;
 
-	public BlockExpression(String[] varNames, StatementListExpression body) {
-		this.varNames = Arrays.copyOf(varNames, varNames.length);
-		this.body = body;
-	}
+    public BlockExpression(String[] varNames, StatementListExpression body) {
+        this.varNames = Arrays.copyOf(varNames, varNames.length);
+        this.body = body;
+    }
 
-	@Override
-	public Object value(final ExecContext ctx) {
-		return new Block(varNames, body);
-	}
+    @Override
+    public Object value(final ExecContext ctx) {
+        return new Block(varNames, body);
+    }
 
-	@Override
-	public Expression[] children() {
-		return new Expression[] { body };
-	}
+    @Override
+    public Expression[] children() {
+        return new Expression[]{body};
+    }
 }

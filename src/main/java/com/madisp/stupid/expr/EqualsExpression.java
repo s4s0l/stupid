@@ -11,22 +11,22 @@ import com.madisp.stupid.StupidRuntimeException;
  * In stupid: {@code expr == expr}
  */
 public class EqualsExpression implements Expression<Boolean> {
-	private Expression left, right;
+    private Expression left, right;
 
-	public EqualsExpression(Expression left, Expression right) {
-		this.left = left;
-		this.right = right;
-	}
+    public EqualsExpression(Expression left, Expression right) {
+        this.left = left;
+        this.right = right;
+    }
 
-	@Override
-	public Expression[] children() {
-		return new Expression[] { left, right };
-	}
+    @Override
+    public Expression[] children() {
+        return new Expression[]{left, right};
+    }
 
-	@Override
+    @Override
     public Boolean value(ExecContext ctx) throws StupidRuntimeException {
-		Object leftValue = ctx.dereference(left);
-		Object rightValue = ctx.dereference(right);
-		return leftValue == null ? rightValue == null : leftValue.equals(rightValue);
-	}
+        Object leftValue = ctx.dereference(left);
+        Object rightValue = ctx.dereference(right);
+        return leftValue == null ? rightValue == null : leftValue.equals(rightValue);
+    }
 }

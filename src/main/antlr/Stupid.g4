@@ -18,6 +18,8 @@ expr: BANG center=expr
     | left=expr MINUS right=expr
     | left=expr LANGLE right=expr
     | left=expr RANGLE right=expr
+    | left=expr LANGLEEQ right=expr
+    | left=expr RANGLEEQ right=expr
     | left=expr EQUALS EQUALS right=expr
     | left=expr AND right=expr
     | left=expr OR right=expr
@@ -81,6 +83,8 @@ PLUS: '+';
 MINUS: '-';
 SLASH: '/';
 STAR: '*';
+LANGLEEQ: '<=';
+RANGLEEQ: '>=';
 LANGLE: '<';
 RANGLE: '>';
 DOLLAR: '$';
@@ -91,7 +95,12 @@ LPAREN: '(';
 RPAREN: ')';
 DOT: '.';
 IDENTIFIER: (DOLLAR|HASH)? (ALPHANUMERIC)+ ('@' (ALPHANUMERIC)+)?;
+
 WS: [ \r\t\u000c\n]+ -> skip;
+SL_COMMENT
+    :   '//' .*? '\n' -> skip
+    ;
+
 
 fragment ESC: '\\' ('t'|'n'|'r'|'\''|'\\');
 fragment DIGIT: '0'..'9';

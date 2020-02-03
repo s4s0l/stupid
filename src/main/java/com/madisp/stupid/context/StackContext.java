@@ -12,11 +12,11 @@ import java.util.Set;
 
 /**
  * TODO: this is build with assumption sub contexts throw an  exception
- *          This makes it both slow and uglu, there should be
- *          distinction in api between real contexts and sub contexts
- *          which could return something like Optional<></>
- *
- *
+ * This makes it both slow and uglu, there should be
+ * distinction in api between real contexts and sub contexts
+ * which could return something like Optional<></>
+ * <p>
+ * <p>
  * StackContext is a LIFO-stack container of {@link ExecContext} instances.
  * StackContext tries to forward the methods to the underlying context by starting
  * from the most recently added one. If a NoSuch* exception is thrown (e.g. no field)

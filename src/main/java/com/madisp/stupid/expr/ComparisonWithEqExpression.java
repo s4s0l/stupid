@@ -12,10 +12,10 @@ import com.madisp.stupid.StupidRuntimeException;
  * <p>
  * Usage in stupid: {@code expr < expr}
  */
-public class ComparisonExpression implements Expression<Boolean> {
+public class ComparisonWithEqExpression implements Expression<Boolean> {
     private Expression left, right;
 
-    public ComparisonExpression(Expression left, Expression right) {
+    public ComparisonWithEqExpression(Expression left, Expression right) {
         this.left = left;
         this.right = right;
     }
@@ -25,9 +25,9 @@ public class ComparisonExpression implements Expression<Boolean> {
         Object leftValue = ctx.dereference(left);
         Object rightValue = ctx.dereference(right);
         if (leftValue instanceof Double || rightValue instanceof Double) {
-            return ctx.getConverter().toDouble(leftValue) < ctx.getConverter().toDouble(rightValue);
+            return ctx.getConverter().toDouble(leftValue) <= ctx.getConverter().toDouble(rightValue);
         } else {
-            return ctx.getConverter().toInt(leftValue) < ctx.getConverter().toInt(rightValue);
+            return ctx.getConverter().toInt(leftValue) <= ctx.getConverter().toInt(rightValue);
         }
     }
 

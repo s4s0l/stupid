@@ -6,21 +6,21 @@ import org.junit.After;
 import org.junit.Before;
 
 public abstract class BaseExpressionTest {
-	protected StackContext ctx = new StackContext();
-	protected ExpressionFactory builder = new ExpressionFactory();
+    protected StackContext ctx = new StackContext();
+    protected ExpressionFactory builder = new ExpressionFactory();
 
-	protected Object eval(String expr) throws StupidRuntimeException {
-		Value e = builder.parseExpression(expr);
-		return ctx.dereference(e);
-	}
+    protected Object eval(String expr) throws StupidRuntimeException {
+        Value e = builder.parseExpression(expr);
+        return ctx.dereference(e);
+    }
 
-	@Before
-	public void setUp() throws StupidRuntimeException {
-		ctx.pushExecContext(new ReflectionContext(this));
-	}
+    @Before
+    public void setUp() throws StupidRuntimeException {
+        ctx.pushExecContext(new ReflectionContext(this));
+    }
 
-	@After
-	public void tearDown() {
-		ctx.popExecContext();
-	}
+    @After
+    public void tearDown() {
+        ctx.popExecContext();
+    }
 }

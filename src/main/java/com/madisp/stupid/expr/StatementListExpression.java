@@ -15,23 +15,23 @@ import java.util.List;
  * In stupid: {@code statement1; statement2; ...; statementN}
  */
 public class StatementListExpression implements Expression {
-	private final List<Expression> statements;
+    private final List<Expression> statements;
 
-	public StatementListExpression(List<Expression> statements) {
-		this.statements = Collections.unmodifiableList(statements);
-	}
+    public StatementListExpression(List<Expression> statements) {
+        this.statements = Collections.unmodifiableList(statements);
+    }
 
-	@Override
+    @Override
     public Object value(ExecContext ctx) throws StupidRuntimeException {
-		Object ret = null;
-		for (Value e : statements) {
-			ret = e.value(ctx);
-		}
-		return ret;
-	}
+        Object ret = null;
+        for (Value e : statements) {
+            ret = e.value(ctx);
+        }
+        return ret;
+    }
 
-	@Override
-	public Expression[] children() {
-		return statements.toArray(new Expression[0]);
-	}
+    @Override
+    public Expression[] children() {
+        return statements.toArray(new Expression[0]);
+    }
 }

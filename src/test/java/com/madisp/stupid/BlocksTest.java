@@ -28,6 +28,14 @@ public class BlocksTest extends BaseExpressionTest {
         assertEquals(Block.class, eval("{|x| x * x }").getClass());
         assertEquals(4, eval("{|x| x * x}.(2)"));
         assertEquals(4, eval("{|x| x * x;x;}.(4)"));
+
+    }
+
+    @Test
+    public void testComments() throws Exception {
+        assertEquals(4, eval("{|x| //asdadasd\nx;}.(4)"));
+        assertEquals("//test", eval("{|x| //asdadasd\n'//test';}.(4)"));
+        assertEquals(4, eval("{|x| x;//asdasd\n}.(4)"));
     }
 
     @Test

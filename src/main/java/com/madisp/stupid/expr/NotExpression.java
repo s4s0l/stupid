@@ -6,23 +6,23 @@ import com.madisp.stupid.StupidRuntimeException;
 
 /**
  * The unary boolean not operator.
- *
+ * <p>
  * Usage in stupid: {@code !expr}
  */
 public class NotExpression implements Expression<Object> {
-	private final Expression expr;
+    private final Expression expr;
 
-	public NotExpression(Expression expr) {
-		this.expr = expr;
-	}
+    public NotExpression(Expression expr) {
+        this.expr = expr;
+    }
 
-	@Override
-	public Object value(ExecContext ctx) throws StupidRuntimeException {
-		return ctx.getOperators().not(ctx.dereference(expr));
-	}
+    @Override
+    public Object value(ExecContext ctx) throws StupidRuntimeException {
+        return ctx.getOperators().not(ctx.dereference(expr));
+    }
 
-	@Override
-	public Expression[] children() {
-		return new Expression[] { expr };
-	}
+    @Override
+    public Expression[] children() {
+        return new Expression[]{expr};
+    }
 }

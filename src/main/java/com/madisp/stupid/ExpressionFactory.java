@@ -91,6 +91,10 @@ public class ExpressionFactory extends StupidBaseVisitor<Expression> {
             return new ComparisonExpression(visitExpr(ctx.left), visitExpr(ctx.right));
         } else if (ctx.RANGLE() != null) {
             return new ComparisonExpression(visitExpr(ctx.right), visitExpr(ctx.left));
+        } else if (ctx.LANGLEEQ() != null) {
+            return new ComparisonWithEqExpression(visitExpr(ctx.left), visitExpr(ctx.right));
+        } else if (ctx.RANGLEEQ() != null) {
+            return new ComparisonWithEqExpression(visitExpr(ctx.right), visitExpr(ctx.left));
         } else if (ctx.var() != null) {
             Expression base = null;
             if (ctx.DOT() != null) {
