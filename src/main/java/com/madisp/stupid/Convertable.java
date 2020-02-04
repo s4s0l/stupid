@@ -12,11 +12,11 @@ public interface Convertable {
     boolean toBool();
 
     /**
-     * Convert an object to an integer.
+     * Convert an object to an long.
      *
-     * @return integer representation of given object
+     * @return long representation of given object
      */
-    int toInt();
+    long toLong();
 
     /**
      * Convert an object to a double.

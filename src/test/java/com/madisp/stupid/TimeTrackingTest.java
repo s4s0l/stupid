@@ -29,6 +29,6 @@ public class TimeTrackingTest extends BaseExpressionTest {
     @Test
     public void longEvaluationShouldNotTimeout() throws StupidRuntimeException {
         tt.resetTimer();
-        assertEquals(100, eval("long(1)"));
+        assertEquals(100L, eval("long(1)"));
     }
 }

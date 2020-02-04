@@ -188,7 +188,7 @@ public class ExpressionFactory extends StupidBaseVisitor<Expression> {
     @Override
     public Expression visitNum(StupidParser.NumContext ctx) {
         if (ctx.INT() != null) {
-            return new ConstantExpression(Integer.parseInt(ctx.getText()));
+            return new ConstantExpression(Long.parseLong(ctx.getText()));
         } else if (ctx.DOUBLE() != null) {
             return new ConstantExpression(Double.parseDouble(ctx.getText()));
         }

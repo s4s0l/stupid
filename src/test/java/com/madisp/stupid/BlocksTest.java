@@ -26,16 +26,16 @@ public class BlocksTest extends BaseExpressionTest {
     public void testSimpleBlock() throws StupidRuntimeException {
         assertNotNull(eval("{|x| x * x }"));
         assertEquals(Block.class, eval("{|x| x * x }").getClass());
-        assertEquals(4, eval("{|x| x * x}.(2)"));
-        assertEquals(4, eval("{|x| x * x;x;}.(4)"));
+        assertEquals(4L, eval("{|x| x * x}.(2)"));
+        assertEquals(4L, eval("{|x| x * x;x;}.(4)"));
 
     }
 
     @Test
     public void testComments() throws Exception {
-        assertEquals(4, eval("{|x| //asdadasd\nx;}.(4)"));
+        assertEquals(4L, eval("{|x| //asdadasd\nx;}.(4)"));
         assertEquals("//test", eval("{|x| //asdadasd\n'//test';}.(4)"));
-        assertEquals(4, eval("{|x| x;//asdasd\n}.(4)"));
+        assertEquals(4L, eval("{|x| x;//asdasd\n}.(4)"));
     }
 
     @Test
@@ -58,7 +58,7 @@ public class BlocksTest extends BaseExpressionTest {
         Map<String, Object> vars = new HashMap<>();
         ctx.pushExecContext(new VarContext(CREATE_ON_SET_OR_GET, vars));
         eval("fun = {|x| x * x}");
-        assertEquals(4, eval("fun.(2)"));
+        assertEquals(4L, eval("fun.(2)"));
         ctx.popExecContext();
     }
 
@@ -67,7 +67,7 @@ public class BlocksTest extends BaseExpressionTest {
         Map<String, Object> vars = new HashMap<>();
         ctx.pushExecContext(new VarContext(CREATE_ON_SET_OR_GET, vars));
         eval("fun = {|x| x * x}");
-        assertEquals(4, eval("fun(2)"));
+        assertEquals(4L, eval("fun(2)"));
         ctx.popExecContext();
     }
 
@@ -76,7 +76,7 @@ public class BlocksTest extends BaseExpressionTest {
         Map<String, Object> vars = new HashMap<>();
         ctx.pushExecContext(new VarContext(CREATE_ON_SET_OR_GET, vars));
         eval("fun.x = {|x| x * x}");
-        assertEquals(4, eval("fun.x(2)"));
+        assertEquals(4L, eval("fun.x(2)"));
         ctx.popExecContext();
     }
 
@@ -86,7 +86,7 @@ public class BlocksTest extends BaseExpressionTest {
         ctx.pushExecContext(new VarContext(CREATE_ON_SET_OR_GET, vars));
         eval("fun.x = 1");
         try {
-            assertEquals(4, eval("fun.x(2)"));
+            assertEquals(4L, eval("fun.x(2)"));
         } finally {
             ctx.popExecContext();
         }
@@ -98,8 +98,8 @@ public class BlocksTest extends BaseExpressionTest {
         NamedBlockContext blocks = new NamedBlockContext();
         this.ctx.pushExecContext(blocks);
         blocks.addBlock("xxx", (Block) eval("{|x| x * x}"));
-        assertEquals(4, eval("xxx(2)"));
-        assertEquals(4, eval("xxx.(2)"));
+        assertEquals(4L, eval("xxx(2)"));
+        assertEquals(4L, eval("xxx.(2)"));
         blocks.addBlock("second", "|x| x + x");
         Block block = blocks.addBlock("third", "|x| second(x) + x");
         assertEquals(
@@ -111,7 +111,7 @@ public class BlocksTest extends BaseExpressionTest {
         assertTrue(supportedSignatures.contains(new MethodSignature("third", 1, true)));
         assertTrue(supportedSignatures.contains(new MethodSignature("xxx", 1, true)));
 
-        assertEquals(6, eval("second(3)"));
+        assertEquals(6L, eval("second(3)"));
         assertEquals("AAA", eval("third('A')"));
 
         ctx.popExecContext();

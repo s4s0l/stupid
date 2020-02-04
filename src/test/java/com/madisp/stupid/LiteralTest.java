@@ -29,8 +29,8 @@ public class LiteralTest extends BaseExpressionTest {
 
     @Test
     public void testIntegers() throws Exception {
-        assertEquals(Integer.class, eval("0").getClass());
-        assertEquals(Integer.valueOf(5), eval("5"));
+        assertEquals(Long.class, eval("0").getClass());
+        assertEquals(Long.valueOf(5), eval("5"));
     }
 
     @Test

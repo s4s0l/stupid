@@ -15,12 +15,12 @@ public interface Converter {
     boolean toBool(Object value);
 
     /**
-     * Convert an object to an integer.
+     * Convert an object to an long.
      *
      * @param value object to convert, may be null
-     * @return integer representation of given object
+     * @return long representation of given object
      */
-    int toInt(Object value);
+    long toLong(Object value);
 
     /**
      * Convert an object to a double.

@@ -28,7 +28,7 @@ public class PlusExpression implements Expression {
         } else if (l instanceof Double || r instanceof Double) {
             return ctx.getConverter().toDouble(l) + ctx.getConverter().toDouble(r);
         }
-        return ctx.getConverter().toInt(l) + ctx.getConverter().toInt(r);
+        return ctx.getConverter().toLong(l) + ctx.getConverter().toLong(r);
     }
 
     @Override

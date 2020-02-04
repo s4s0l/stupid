@@ -50,17 +50,17 @@ public class DefaultConverter implements Converter {
      * @return int representation of the value
      */
     @Override
-    public int toInt(Object value) {
+    public long toLong(Object value) {
         if (value instanceof Integer) {
-            return (Integer) value;
+            return ((Integer) value).longValue();
         } else if (value instanceof Double) {
-            return ((Double) value).intValue();
+            return ((Double) value).longValue();
         } else if (value instanceof Float) {
-            return ((Float) value).intValue();
+            return ((Float) value).longValue();
         } else if (value instanceof Long) {
-            return ((Long) value).intValue();
+            return (Long) value;
         } else if (value instanceof Convertable) {
-            return ((Convertable) value).toInt();
+            return ((Convertable) value).toLong();
         }
         return 0;
     }

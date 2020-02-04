@@ -20,11 +20,13 @@ public class NegateExpression implements Expression {
     public Object value(ExecContext ctx) throws StupidRuntimeException {
         Object value = ctx.dereference(expr);
         if (value instanceof Integer) {
-            return 0 - ((Integer) value);
+            return -((Integer) value).longValue();
+        } else if (value instanceof Long) {
+            return -((Long) value);
         } else if (value instanceof Double) {
-            return 0 - ((Double) value);
+            return 0d - ((Double) value);
         }
-        return 0;
+        return 0L;
     }
 
     @Override

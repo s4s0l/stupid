@@ -27,7 +27,7 @@ public class ComparisonWithEqExpression implements Expression<Boolean> {
         if (leftValue instanceof Double || rightValue instanceof Double) {
             return ctx.getConverter().toDouble(leftValue) <= ctx.getConverter().toDouble(rightValue);
         } else {
-            return ctx.getConverter().toInt(leftValue) <= ctx.getConverter().toInt(rightValue);
+            return ctx.getConverter().toLong(leftValue) <= ctx.getConverter().toLong(rightValue);
         }
     }
 

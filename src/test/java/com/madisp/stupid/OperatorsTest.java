@@ -10,62 +10,62 @@ import static org.junit.Assert.assertEquals;
 public class OperatorsTest extends BaseExpressionTest {
     @Test
     public void testPlus() throws Exception {
-        assertEquals(Integer.class, eval("2 + 3").getClass());
-        assertEquals(2 + 3, eval("2 + 3"));
+        assertEquals(Long.class, eval("2 + 3").getClass());
+        assertEquals(2L + 3L, eval("2 + 3"));
         assertEquals(Double.class, eval("2 + 3d").getClass());
-        assertEquals(2 + 3d, (Double) eval("2 + 3d"), 0.0001d);
-        assertEquals(2d + 3, (Double) eval("2d + 3"), 0.0001d);
+        assertEquals(2L + 3d, (Double) eval("2 + 3d"), 0.0001d);
+        assertEquals(2d + 3L, (Double) eval("2d + 3"), 0.0001d);
         assertEquals(1.5d + 1.5d, (Double) eval("1.5 + 1.5d"), 0.0001d);
         assertEquals("foo" + "bar", eval("'foo' + 'bar'"));
         assertEquals("foo" + "bar" + "foobar", eval("'foo' + 'bar' + 'foobar'"));
         assertEquals("foo" + 1, eval("'foo' + 1"));
-        assertEquals(1 + "foo", eval("1 + 'foo'"));
+        assertEquals(1L + "foo", eval("1 + 'foo'"));
     }
 
     @Test
     public void testMinus() throws Exception {
-        assertEquals(Integer.class, eval("2 - 3").getClass());
-        assertEquals(2 - 3, eval("2 - 3"));
+        assertEquals(Long.class, eval("2 - 3").getClass());
+        assertEquals(2L - 3L, eval("2 - 3"));
         assertEquals(Double.class, eval("2 - 3d").getClass());
-        assertEquals(2 - 3d, (Double) eval("2 - 3d"), 0.0001d);
-        assertEquals(2d - 3, (Double) eval("2d - 3"), 0.0001d);
+        assertEquals(2L - 3d, (Double) eval("2 - 3d"), 0.0001d);
+        assertEquals(2d - 3L, (Double) eval("2d - 3"), 0.0001d);
         assertEquals(1.5d - 1.5d, (Double) eval("1.5 - 1.5d"), 0.0001d);
     }
 
     @Test
     public void testMultiplication() throws Exception {
-        assertEquals(Integer.class, eval("2 * 3").getClass());
-        assertEquals(2 * 3, eval("2 * 3"));
+        assertEquals(Long.class, eval("2 * 3").getClass());
+        assertEquals(2L * 3L, eval("2 * 3"));
         assertEquals(Double.class, eval("2 * 3d").getClass());
-        assertEquals(2 * 3d, (Double) eval("2 * 3d"), 0.0001d);
-        assertEquals(2d * 3, (Double) eval("2d * 3"), 0.0001d);
+        assertEquals(2L * 3d, (Double) eval("2 * 3d"), 0.0001d);
+        assertEquals(2d * 3L, (Double) eval("2d * 3"), 0.0001d);
     }
 
     @Test
     public void testDivision() throws Exception {
-        assertEquals(Integer.class, eval("2 / 3").getClass());
-        assertEquals(0, eval("2 / 3"));
-        assertEquals(3, eval("7 / 2"));
-        assertEquals(3, eval("9 / 3"));
+        assertEquals(Long.class, eval("2 / 3").getClass());
+        assertEquals(0L, eval("2 / 3"));
+        assertEquals(3L, eval("7 / 2"));
+        assertEquals(3L, eval("9 / 3"));
         assertEquals(Double.class, eval("2 / 3d").getClass());
-        assertEquals(2 / 3d, (Double) eval("2 / 3d"), 0.0001d);
-        assertEquals(2 / 3d, (Double) eval("2d / 3"), 0.0001d);
+        assertEquals(2L / 3d, (Double) eval("2 / 3d"), 0.0001d);
+        assertEquals(2L / 3d, (Double) eval("2d / 3"), 0.0001d);
     }
 
     @Test
     public void testNegation() throws Exception {
-        assertEquals(Integer.class, eval("-2").getClass());
-        assertEquals(-2, eval("-2"));
+        assertEquals(Long.class, eval("-2").getClass());
+        assertEquals(-2L, eval("-2"));
         assertEquals(Double.class, eval("-2d").getClass());
         assertEquals(-2d, (Double) eval("-2d"), 0.0001d);
-        assertEquals(0, eval("-'asdf'")); // -(non-numeric) yields 0
+        assertEquals(0L, eval("-'asdf'")); // -(non-numeric) yields 0
     }
 
     @Test
     public void testArithmeticPrecedence() throws Exception {
-        assertEquals(Integer.class, eval("3+5*2").getClass());
-        assertEquals(3 + 5 * 2, eval("3+5*2"));
-        assertEquals((3 + 5) * 2, eval("(3+5)*2"));
+        assertEquals(Long.class, eval("3+5*2").getClass());
+        assertEquals(3L + 5L * 2L, eval("3+5*2"));
+        assertEquals((3L + 5L) * 2L, eval("(3+5)*2"));
     }
 
     @Test
@@ -112,7 +112,7 @@ public class OperatorsTest extends BaseExpressionTest {
     @Test
     public void testCustomOperators() throws Exception {
         ctx.pushExecContext(new FixedMethodContext(
-                FixedMethodContext.root("bits", (Object a) -> new Bits(ctx.getConverter().toInt(a)))));
+                FixedMethodContext.root("bits", (Object a) -> new Bits(ctx.getConverter().toLong(a)))));
 
         //operators test
 
@@ -127,20 +127,20 @@ public class OperatorsTest extends BaseExpressionTest {
         assertEquals(false, eval("bits(0) or false"));
 
         //converters test
-        assertEquals(2, eval("bits(0) ? 1 : 2"));
-        assertEquals(1, eval("bits(1) ? 1 : 2"));
+        assertEquals(2L, eval("bits(0) ? 1 : 2"));
+        assertEquals(1L, eval("bits(1) ? 1 : 2"));
         assertEquals("110:)", eval("bits(6) + ':)'"));
-        assertEquals(7, eval("bits(6) + 1"));
-        assertEquals(12, eval("bits(6) + bits(6)")); //todo: add other operators
+        assertEquals(7L, eval("bits(6) + 1"));
+        assertEquals(12L, eval("bits(6) + bits(6)")); //todo: add other operators
 
 
         ctx.popExecContext();
     }
 
     private static class Bits implements Convertable, OperatorCapable<Bits> {
-        private final int value;
+        private final long value;
 
-        public Bits(int value) {
+        public Bits(long value) {
             this.value = value;
         }
 
@@ -150,7 +150,7 @@ public class OperatorsTest extends BaseExpressionTest {
         }
 
         @Override
-        public int toInt() {
+        public long toLong() {
             return value;
         }
 
@@ -161,7 +161,7 @@ public class OperatorsTest extends BaseExpressionTest {
 
         @Override
         public String toStupidString() {
-            return Integer.toString(value, 2);
+            return Long.toString(value, 2);
         }
 
         @Override
