@@ -18,7 +18,9 @@ public class AndExpression implements Expression<Object> {
 
     @Override
     public Object value(ExecContext ctx) throws StupidRuntimeException {
-        return ctx.getOperators().and(left.value(ctx), right.value(ctx));
+        Object leftVal = ctx.dereference(left);
+        Object rightVal = ctx.dereference(right);
+        return ctx.getOperators().and(leftVal, rightVal);
     }
 
     @Override

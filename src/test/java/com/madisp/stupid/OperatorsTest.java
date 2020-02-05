@@ -1,8 +1,10 @@
 package com.madisp.stupid;
 
 import com.madisp.stupid.context.FixedMethodContext;
+import com.madisp.stupid.context.VarContext;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 import static org.junit.Assert.assertEquals;
@@ -101,6 +103,9 @@ public class OperatorsTest extends BaseExpressionTest {
         assertEquals((true || false) && false, eval("(true or false) and false"));
         assertEquals(false && (false || true), eval("false and (false or true)"));
         assertEquals((true || false) && !false, eval("(true or false) and !false"));
+        ctx.pushExecContext(new VarContext(VarContext.Type.CREATE_ON_SET_OR_GET,new HashMap<>()));
+        assertEquals(true, eval("v1=1==1;v2=2==2;v1 and v2"));
+        ctx.popExecContext();
     }
 
     @Test
